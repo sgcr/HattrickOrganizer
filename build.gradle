@@ -31,7 +31,7 @@ plugins {
 }
 apply plugin: de.jansauer.poeditor.POEditorPlugin
 
-version = '9.0'
+version = '9.1'
 ext {
     // Development_stage (DEV:0  BETA:1  STABLE:2)
     development_stage = project.properties['DEV_STAGE'] as Integer ?: 0
