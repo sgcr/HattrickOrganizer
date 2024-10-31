@@ -55,7 +55,7 @@ class Curve {
 	private Point m_currentPoint = null;
 	private Color m_Color = null;
 
-	class Point implements Comparable<Point> {
+	static class Point implements Comparable<Point> {
 
 		double m_dSpirit;
 		int m_iAttitude;
