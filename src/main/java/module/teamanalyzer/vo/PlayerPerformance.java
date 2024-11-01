@@ -62,11 +62,11 @@ public class PlayerPerformance {
     }
 
     public String getSpielerName() {
-        return mlp.getSpielerName();
+        return mlp.getLastName();
     }
 
     public String getSpielerVName() {
-        return mlp.getSpielerVName();
+        return mlp.getFirstName();
     }
 
     public void setStatus(int i) {
