@@ -116,7 +116,21 @@
 * `Debug` / `SQL Editor`: Fixed that SQL statements were always executed in upper case. (#2491)
 * `Debug` / `Save downloaded XML`: Added environment variable `HO_SAVE_DOWNLOADED_XML` to control that option. (#2506)
 
+## General
+
+There is a general new feature that allows to define the way a name of a player is displayed.
+These spots are affected:
+
+* `Squad` / Content of `Name` column.
+* `Squad` / Player Details Panel: The name on that card.
+* `Lineup` / Position
+* `Lineup` / Substitutes
+* `Lineup` / List of players
+* `Matches` / Formation
+
 ## Translations
+
+* Added the missing translation for the short text in the table for `Goals for the Team`.
 
 Reports by Contributors - October 19, 2025 - October 01, 2026
 
