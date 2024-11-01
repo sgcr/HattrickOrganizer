@@ -14,7 +14,7 @@ public class PlayerNameCell extends JLabel implements Comparable<PlayerNameCell>
         this.speed = speed;
         this.setOpaque(true);
         this.setBorder(BorderFactory.createEmptyBorder(0, 1, 0, 1));
-        this.setText(player.getFullName());
+        this.setText(player.getFullNameWithLastNameFirst());
 
         String tooltip = TrainingPreviewPlayers.instance().getTrainPreviewPlayer(player).getText();
         if (tooltip == null){
