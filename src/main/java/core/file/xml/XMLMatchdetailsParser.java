@@ -226,11 +226,11 @@ public class XMLMatchdetailsParser {
             	myHighlight.setMatchEventID(iMatchEventID);
             	myHighlight.setMinute(iMinute);
             	myHighlight.setPlayerId(iSubjectPlayerID);
-            	myHighlight.setPlayerName(subjectPlayer!=null?subjectPlayer.getSpielerName():"");
+            	myHighlight.setPlayerName(subjectPlayer!=null?subjectPlayer.getLastName():"");
             	myHighlight.setSpielerHeim(subHome);
             	myHighlight.setTeamID(iSubjectTeamID);
             	myHighlight.setAssistingPlayerId(iObjectPlayerID);
-            	myHighlight.setAssistingPlayerName(objectPlayer!=null?objectPlayer.getSpielerName():"");
+            	myHighlight.setAssistingPlayerName(objectPlayer!=null?objectPlayer.getLastName():"");
             	myHighlight.setGehilfeHeim(objHome);
             	myHighlight.setEventText(eventtext);
             	myHighlight.setMatchPartId(MatchEvent.MatchPartId.fromMatchPartId(iMatchPart));
@@ -284,12 +284,12 @@ public class XMLMatchdetailsParser {
         var root = doc.getDocumentElement();
 
         try {
-            //Daten füllen            
+            //Daten füllen
             //MatchData
             root = (Element) root.getElementsByTagName("Match").item(0);
             root = (Element) root.getElementsByTagName("Arena").item(0);
-            
-            
+
+
             try {
             	ele = (Element) root.getElementsByTagName("ArenaID").item(0);
             	md.setArenaID(Integer.parseInt(ele.getFirstChild().getNodeValue()));
@@ -300,7 +300,7 @@ public class XMLMatchdetailsParser {
             } catch (Exception e){
             	// This fails at tournament matches - ignore
             }
-            
+
             ele = (Element) root.getElementsByTagName("WeatherID").item(0);
             if ( ele != null ) md.setWetterId(Integer.parseInt(ele.getFirstChild().getNodeValue()));
             ele = (Element) root.getElementsByTagName("SoldTotal").item(0);
@@ -378,7 +378,7 @@ public class XMLMatchdetailsParser {
         Element root;
 
         try {
-            //Daten füllen                        
+            //Daten füllen
             root = doc.getDocumentElement();
             root = (Element) root.getElementsByTagName("Match").item(0);
             root = (Element) root.getElementsByTagName("AwayTeam").item(0);
@@ -435,7 +435,7 @@ public class XMLMatchdetailsParser {
         Element root;
 
         try {
-            //Daten füllen                        
+            //Daten füllen
             root = doc.getDocumentElement();
             root = (Element) root.getElementsByTagName("Match").item(0);
             root = (Element) root.getElementsByTagName("HomeTeam").item(0);
