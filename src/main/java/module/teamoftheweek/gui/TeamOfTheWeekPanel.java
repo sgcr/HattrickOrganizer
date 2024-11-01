@@ -44,7 +44,7 @@ public class TeamOfTheWeekPanel extends LazyPanel implements ChangeListener, Act
 	protected void update() {
 		// do nothing
 	}
-	
+
 	private void reloadData(boolean isSeason) {
 		int week = ((Number) weekSpinner.getValue()).intValue();
 		var sl = calcBestLineup(week, true);
@@ -123,7 +123,7 @@ public class TeamOfTheWeekPanel extends LazyPanel implements ChangeListener, Act
 
 		panel.removeAll();
 
-		JLabel spielername = createLabel(mlp.getSpielerName(), Color.black, 1);
+		JLabel spielername = createLabel(mlp.getLastName(), Color.black, 1);
 		JLabel teamname = createLabel(getTeamName(mlp.getTeamId()), Color.black, 1);
 		JLabel position = createLabel(posi, Color.black, 0);
 		position.setOpaque(false);
@@ -209,7 +209,7 @@ public class TeamOfTheWeekPanel extends LazyPanel implements ChangeListener, Act
 		m_jpPanel.add(tab, BorderLayout.CENTER);
 		setLayout(new BorderLayout());
 		add(m_jpPanel, BorderLayout.CENTER);
-		
+
 		setWeekLimits();
 		reloadData(true);
 	}

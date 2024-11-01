@@ -6,6 +6,7 @@ import core.db.DBManager;
 import core.model.HOVerwaltung;
 import core.model.TranslationFacility;
 import core.model.player.CommentType;
+import core.model.player.Player;
 import core.model.player.PlayerCategory;
 import core.model.player.Specialty;
 import core.util.HODateTime;
@@ -436,14 +437,8 @@ public class YouthPlayer extends AbstractTable.Storable {
      * @return String
      */
     public String getFullName() {
-        var ret = this.getFirstName();
-        if (!ret.isEmpty() && !this.getNickName().isEmpty()) {
-            ret += " '" + this.getNickName() + "'";
-        }
-        if (!ret.isEmpty() && !this.getLastName().isEmpty()) {
-            ret += " " + this.getLastName();
-        }
-        return ret;
+        return Player.getFullNameWithLastNameFirst(getFirstName(), getLastName(), getNickName());
+//        return Player.getFullName(getFirstName(), getLastName(), getNickName());
     }
 
     /**

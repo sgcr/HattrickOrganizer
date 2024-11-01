@@ -373,7 +373,7 @@ public class HOModel {
 
         var lineupPos = DBManager.instance().getMatchInserts(objectPlayerID);
         for (var p : lineupPos) {
-            return p.getSpielerName();
+            return p.getLastName();
         }
 
         var teamId = SystemManager.getActiveTeamId();

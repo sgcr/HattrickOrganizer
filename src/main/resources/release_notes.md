@@ -80,6 +80,18 @@
 
 * Added the missing translation for the short text in the table for `Goals for the Team`.
 
+## General
+
+There is a general new feature that allows to define the way a name of a player is displayed.
+These spots are affected:
+
+* `Squad` / Content of `Name` column.
+* `Squad` / Player Details Panel: The name on that card.
+* `Lineup` / Position
+* `Lineup` / Substitutes
+* `Lineup` / List of players
+* `Matches` / Formation
+
 Reports by Contributors - October 19, 2025 - December 30, 2025
 
 * Ioannidouefty 459
