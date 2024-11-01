@@ -54,9 +54,7 @@ public class DownloadFilter extends DefaultMutableTreeNode {
             int finalI = i;
             var season = seasons.stream().filter(f -> f.getSaison() == finalI).findFirst();
             var itemText = new StringBuilder(TranslationFacility.tr("Season")).append(" ").append(i);
-            if (season.isPresent()) {
-                itemText.append(" / ").append(season.get().getLigaName());
-            }
+            season.ifPresent(spielplan -> itemText.append(" / ").append(spielplan.getLigaName()));
             previousSeriesData.add(new DefaultMutableTreeNode(Pair.of(itemText.toString(), finalI)));
         }
     }
