@@ -1,7 +1,16 @@
 package core.model.player;
 
-import java.util.HashMap;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@RequiredArgsConstructor
+@Getter
 public enum Specialty {
     /*
     SpecialtyID
@@ -16,45 +25,27 @@ public enum Specialty {
 8	support
 */
 
-    NoSpecialty(0),
-    Technical(1),
-    Quick(2),
-    Powerful(3),
-    Unpredictable(4),
-    Head(5),        // renamed to fit to ls.player.speciality.head string
-    Regainer(6),    // renamed to fit to ls.player.speciality.regainer string
-    Not_used(7),
-    Support(8);
+    NoSpecialty(0, null),
+    Technical(1, "ls.player.speciality.technical"),
+    Quick(2, "ls.player.speciality.quick"),
+    Powerful(3, "ls.player.speciality.powerful"),
+    Unpredictable(4, "ls.player.speciality.unpredictable"),
+    Head(5, "ls.player.speciality.head"),
+    Regainer(6, "ls.player.speciality.regainer"),
+    Not_used(7, null),
+    Support(8, "ls.player.speciality.support");
 
-    private final int value;
-    private static final HashMap<Integer, Specialty> map = new HashMap<>();
+    private final int id;
+    private final String translationKey;
 
-    Specialty(int value) {
-        this.value = value;
+    private static final Map<Integer, Specialty> MAP_VALUE_TO_SPECIALTY =
+            Stream.of(values()).collect(Collectors.toMap(Specialty::getId, Function.identity()));
+
+    public static Specialty fromValueNullSafe(Integer value) {
+        return Optional.ofNullable(value).map(MAP_VALUE_TO_SPECIALTY::get).orElse(null);
     }
 
-    // Init mapping
-    static {
-        for (Specialty s : Specialty.values()) {
-            map.put(s.value, s);
-        }
-    }
-
-    public static Specialty getSpecialty(Integer s) {
-        if ( s != null) {
-            return map.get(s);
-        }
-        return null;
-    }
-
-    public static Integer getValue(Specialty specialty){
-        if ( specialty != null){
-            return specialty.getValue();
-        }
-        return null;
-    }
-
-    public int getValue() {
-        return value;
+    public static Integer getValueNullSafe(Specialty specialty) {
+        return Optional.ofNullable(specialty).map(Specialty::getId).orElse(null);
     }
 }

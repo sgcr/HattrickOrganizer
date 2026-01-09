@@ -115,7 +115,7 @@ public class YouthPlayer extends AbstractTable.Storable {
                     maxSkill.setMax(c.skillLevel);
                     maxSkill.setIsTop3(true);
                 } else if (c.type == CommentType.PLAYER_HAS_SPECIALTY) {
-                    this.specialty = Specialty.getSpecialty(c.skillType.getValue());
+                    this.specialty = Specialty.fromValueNullSafe(c.skillType.getValue());
                 }
             }
         }
@@ -925,7 +925,7 @@ public class YouthPlayer extends AbstractTable.Storable {
         playerCategory = PlayerCategory.valueOf(getInt(properties, "playercategoryid", 0));
         cards = getInt(properties, "cards", 0);
         injuryLevel = getInt(properties, "injurylevel", 0);
-        specialty = Specialty.getSpecialty(getInt(properties, "specialty", 0));
+        specialty = Specialty.fromValueNullSafe(getInt(properties, "specialty", 0));
         careerGoals = getInt(properties, "careergoals", 0);
         careerHattricks = getInt(properties, "careerhattricks", 0);
         leagueGoals = getInt(properties, "leaguegoals", 0);

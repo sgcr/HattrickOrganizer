@@ -440,7 +440,7 @@ public class ImageUtilities {
 	}
 
 	public static Icon getSmallPlayerSpecialtyIcon(Specialty specialty) {
-		return getSmallPlayerSpecialtyIcon(HOIconName.SPECIALTIES[specialty.getValue()]);
+		return getSmallPlayerSpecialtyIcon(HOIconName.SPECIALTIES[specialty.getId()]);
 	}
 
 	public static Icon getTransferInIcon(int size) {

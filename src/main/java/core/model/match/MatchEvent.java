@@ -1103,10 +1103,10 @@ public class MatchEvent extends AbstractTable.Storable {
     }
 
     private Icon getSpecialtyFaultIcon(Specialty specialty) {
-        return getIcon(HOIconName.SPECIALTIES[specialty.getValue()]);
+        return getIcon(HOIconName.SPECIALTIES[specialty.getId()]);
     }
     private Icon getSpecialtyIcon(Specialty specialty) {
-        return getIcon(HOIconName.SPECIALTIES[specialty.getValue()], HOColorName.PLAYER_SPECIALTY_COLOR);
+        return getIcon(HOIconName.SPECIALTIES[specialty.getId()], HOColorName.PLAYER_SPECIALTY_COLOR);
     }
 
     private Icon getIcon(String key, HOColorName color) {

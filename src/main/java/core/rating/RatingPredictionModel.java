@@ -398,7 +398,7 @@ public class RatingPredictionModel {
             contribution *= overcrowdingPenalty;
             var exp = experienceCache.get(player.getSkillValue(EXPERIENCE), sector);
             contribution += exp;
-            contribution *= weatherCache.get(Specialty.getSpecialty(player.getSpecialty()), weather);
+            contribution *= weatherCache.get(Specialty.fromValueNullSafe(player.getSpecialty()), weather);
             contribution *= staminaCache.get((double) player.getStamina(), minute, startMinute, tacticType);
 
 //            if ( minute == 0) {
@@ -486,7 +486,7 @@ public class RatingPredictionModel {
                                     var behaviours = r.getValue();
                                     var specialties = behaviours.get(behaviour);
                                     if (specialties != null) {
-                                        var c = specialties.get(Specialty.getSpecialty(player.getSpecialty()));
+                                        var c = specialties.get(Specialty.fromValueNullSafe(player.getSpecialty()));
                                         var strength = calcStrength(player, skillType);
                                         var res = strength * c;
                                         ret += res;
@@ -970,7 +970,7 @@ public class RatingPredictionModel {
      * @return Player rating value
      */
     public double getPlayerRating(@NotNull Player p, int roleId, byte behaviour, int minute, Weather weather) {
-        return weatherCache.get(Specialty.getSpecialty(p.getSpecialty()), weather)
+        return weatherCache.get(Specialty.fromValueNullSafe(p.getSpecialty()), weather)
                 * getPlayerRating(p, roleId, behaviour, minute);
     }
 
@@ -1072,7 +1072,7 @@ public class RatingPredictionModel {
      * @return Double
      */
     public double getPlayerMatchAverageRating(Player p, int roleId, byte behaviour, Weather weather) {
-        return weatherCache.get(Specialty.getSpecialty(p.getSpecialty()), weather)
+        return weatherCache.get(Specialty.fromValueNullSafe(p.getSpecialty()), weather)
                 * getPlayerMatchAverageRating(p, roleId, behaviour);
     }
 
@@ -1405,7 +1405,7 @@ public class RatingPredictionModel {
         var player = p.getPlayer();
         if (player != null) {
             var ret = playerTacticStrengthCache.get(player, playerSkill);
-            ret *= weatherCache.get(Specialty.getSpecialty(player.getSpecialty()), weather);
+            ret *= weatherCache.get(Specialty.fromValueNullSafe(player.getSpecialty()), weather);
             ret *= staminaCache.get((double) player.getStamina(), minute, p.getStartMinute(), tacticType);
             return ret;
         }
