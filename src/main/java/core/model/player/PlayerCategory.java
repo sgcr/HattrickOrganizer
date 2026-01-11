@@ -1,7 +1,17 @@
 package core.model.player;
 
 import core.model.TranslationFacility;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Getter
+@RequiredArgsConstructor
 public enum PlayerCategory {
 
     //    PlayerCategoryID
@@ -32,12 +42,13 @@ public enum PlayerCategory {
 
     private final int id;
 
-    PlayerCategory(int id) {
-        this.id = id;
-    }
+    private static final Map<Integer, PlayerCategory> MAP_ID_TO_PLAYER_CATEGORY =
+        Arrays.stream(values()).collect(Collectors.toMap(PlayerCategory::getId, Function.identity()));
 
     public static String StringValueOf(PlayerCategory value) {
-        if (value == null || value == NoCategorySet) return "";
+        if (value == null || value == NoCategorySet) {
+            return "";
+        }
         return TranslationFacility.tr("ls.player.category." + value._toString());
     }
 
@@ -50,24 +61,11 @@ public enum PlayerCategory {
         return StringValueOf(this);
     }
 
-    public int getId() {
-        return id;
-    }
-
     public static PlayerCategory valueOf(Integer id) {
-        if ( id != null) {
-            for (var category : PlayerCategory.values()) {
-                if (category.getId() == id) {
-                    return category;
-                }
-            }
-        }
-        return null;
+        return Optional.ofNullable(id).map(MAP_ID_TO_PLAYER_CATEGORY::get).orElse(null);
     }
 
     public static int idOf(PlayerCategory category){
-        if (category!=null) return category.getId();
-        return NoCategorySet.id;
+        return Optional.ofNullable(category).map(PlayerCategory::getId).orElse(NoCategorySet.getId());
     }
-
 }
