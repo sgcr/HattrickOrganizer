@@ -2,9 +2,16 @@ package core.model.enums;
 
 import core.model.TranslationFacility;
 import core.model.match.IMatchType;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+@Getter
+@RequiredArgsConstructor
 public enum MatchTypeExtended implements IMatchType {
 
 	EMERALDCUP(1001), // That match type is not part of HT CHPP API. It is created within HO for convenience with existing DB structure
@@ -14,33 +21,15 @@ public enum MatchTypeExtended implements IMatchType {
 	DIVISIONBATTLE(1101), // That match type is not part of HT CHPP API. It is created within HO for convenience with existing DB structure
  	GROUP_OFFICIAL(9990); // Supposed to replace constants declared in SpielePanel
 
-
 	private final int id;
 
+    private static final Map<Integer, MatchTypeExtended> MAP_ID_TO_MATCH_TYPE_EXTENDED =
+        Arrays.stream(values()).collect(Collectors.toMap(MatchTypeExtended::getId, Function.identity()));
 
-	MatchTypeExtended(int id) {
-		this.id = id;
-	}
+    public static MatchTypeExtended getById(int id) {
+        return MAP_ID_TO_MATCH_TYPE_EXTENDED.get(id);
+    }
 
-
-	public int getId() {
-		return id;
-	}
-
-
-	public static Stream<MatchTypeExtended> stream() {
-		return Stream.of(MatchTypeExtended.values());
-	}
-
-	public static MatchTypeExtended getById(int id) {
-		for (MatchTypeExtended matchType : MatchTypeExtended.values()) {
-			if (matchType.getId() == id) {
-				return matchType;
-			}
-		}
-		return null;
-	}
-	
 	@Override
 	public int getMatchTypeId() {
 		return MatchType.CUP.getId();
