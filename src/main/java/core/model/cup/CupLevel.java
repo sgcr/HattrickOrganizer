@@ -1,8 +1,15 @@
 package core.model.cup;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Getter
+@RequiredArgsConstructor
 public enum CupLevel {
 
     NONE(0),
@@ -11,26 +18,11 @@ public enum CupLevel {
     CONSOLATION(3);  // Consolation cup
 
     private final int id;
-    private static final Map<Integer, CupLevel> map = new HashMap<>();
 
-    CupLevel(int id) {
-        this.id = id;
-    }
-
-    static {
-        for (CupLevel oCupLevel : CupLevel.values()) {
-            map.put(oCupLevel.id, oCupLevel);
-        }
-    }
+    private static final Map<Integer, CupLevel> MAP_ID_TO_CUP_LEVEL =
+        Arrays.stream(values()).collect(Collectors.toMap(CupLevel::getId, Function.identity()));
 
     public static CupLevel fromInt(Integer iCupLevel) {
-        if (iCupLevel != null) {
-            return (CupLevel) map.get(iCupLevel);
-        }
-        return null;
-    }
-
-    public int getId() {
-        return id;
+        return MAP_ID_TO_CUP_LEVEL.getOrDefault(iCupLevel, null);
     }
 }
