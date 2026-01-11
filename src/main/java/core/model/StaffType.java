@@ -1,5 +1,15 @@
 package core.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Getter
+@RequiredArgsConstructor
 public enum StaffType {
 
 	NONE(0),
@@ -10,26 +20,15 @@ public enum StaffType {
 	FORMCOACH(5),
 	FINANCIALDIRECTOR(6),
 	TACTICALASSISTANT(7);
-		
+
 	private final int id;
 
-	StaffType(int id) {
-		this.id = id;
-	}
+    private static final Map<Integer, StaffType> MAP_ID_TO_STAFF_TYPE =
+        Arrays.stream(values()).collect(Collectors.toMap(StaffType::getId, Function.identity()));
 
-	public int getId() {
-		return id;
-	}
-
-
-		public static StaffType getById(int id) {
-			for (StaffType staffRole : StaffType.values()) {
-				if (staffRole.getId() == id) {
-					return staffRole;
-				}
-			}
-			return null;
-		}
+    public static StaffType getById(int id) {
+        return MAP_ID_TO_STAFF_TYPE.getOrDefault(id, null);
+    }
 
 		public String getName() {
 			 switch (this) {
@@ -53,7 +52,7 @@ public enum StaffType {
 
 		         case TACTICALASSISTANT:
 		           return TranslationFacility.tr("ls.club.staff.tacticalassistant");
-				 
+
 		           //Error?
 		         default:
 		             return "unknown";

@@ -2,9 +2,16 @@ package module.training;
 
 import core.constants.TrainingType;
 import core.constants.player.PlayerSkill;
-import java.awt.Color;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.awt.*;
+import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Class that manages all the relation of Skills
@@ -41,6 +48,8 @@ public class Skills {
     7	Set Pieces
     8	Passing
      */
+    @Getter
+    @RequiredArgsConstructor
     public enum ScoutCommentSkillTypeID {
         AVERAGE(0),
         KEEPER(1),
@@ -53,35 +62,16 @@ public class Skills {
         PASSING(8);
 
         private final int value;
-        private static final HashMap<Integer, ScoutCommentSkillTypeID> map = new HashMap<>();
 
-        ScoutCommentSkillTypeID(int value) {
-            this.value = value;
-        }
-
-        // Init mapping
-        static {
-            for (ScoutCommentSkillTypeID skill : ScoutCommentSkillTypeID.values()) {
-                map.put(skill.value, skill);
-            }
-        }
+        private static final Map<Integer, ScoutCommentSkillTypeID> MAP_VALUE_TO_ENUM_VALUE =
+            Arrays.stream(values()).collect(Collectors.toMap(ScoutCommentSkillTypeID::getValue, Function.identity()));
 
         public static ScoutCommentSkillTypeID valueOf(Integer skill) {
-            if ( skill != null) {
-                return map.get(skill);
-            }
-            return null;
+            return MAP_VALUE_TO_ENUM_VALUE.getOrDefault(skill, null);
         }
 
-        public static Integer value(ScoutCommentSkillTypeID typeID){
-            if ( typeID != null){
-                return typeID.getValue();
-            }
-            return null;
-        }
-
-        public int getValue() {
-            return value;
+        public static Integer valueNullSafe(ScoutCommentSkillTypeID typeID) {
+            return Optional.ofNullable(typeID).map(ScoutCommentSkillTypeID::getValue).orElse(null);
         }
 
         private static final EnumMap<ScoutCommentSkillTypeID, PlayerSkill> hTskillIdmap = new EnumMap<>(ScoutCommentSkillTypeID.class) {{
