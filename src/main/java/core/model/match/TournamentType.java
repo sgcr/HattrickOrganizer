@@ -1,5 +1,15 @@
 package core.model.match;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Getter
+@RequiredArgsConstructor
 public enum TournamentType {
     NONE(0),
     LEAGUE_WITH_PLAYOFFS(3),
@@ -28,13 +38,6 @@ public enum TournamentType {
 
     private final int id;
 
-    TournamentType(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
     public boolean isU21TeamMatch(){
         return id > 4800000 && id < 4900000;
     }
@@ -58,12 +61,10 @@ public enum TournamentType {
         };
     }
 
+    private static final Map<Integer, TournamentType> MAP_ID_TO_TOURNAMEN_TTYPE =
+        Arrays.stream(values()).collect(Collectors.toMap(TournamentType::getId, Function.identity()));
+
     public static TournamentType getById(int id) {
-        for (TournamentType oTournamentType : TournamentType.values()) {
-            if (oTournamentType.getId() == id) {
-                return oTournamentType;
-            }
-        }
-        return null;
+        return MAP_ID_TO_TOURNAMEN_TTYPE.get(id);
     }
 }

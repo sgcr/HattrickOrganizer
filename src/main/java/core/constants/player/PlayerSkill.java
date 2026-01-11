@@ -2,6 +2,11 @@ package core.constants.player;
 
 import core.model.TranslationFacility;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 
 public enum  PlayerSkill {
 
@@ -28,6 +33,9 @@ public enum  PlayerSkill {
 		return id;
 	}
 
+    private static final Map<Integer, PlayerSkill> MAP_ID_TO_PLAYER_SKILL =
+        Arrays.stream(values()).collect(Collectors.toMap(PlayerSkill::toInt, Function.identity()));
+
 	public String getLanguageString() {
 		var b = new StringBuilder("ls.player.");
 		switch (this) {
@@ -37,16 +45,9 @@ public enum  PlayerSkill {
 		return TranslationFacility.tr(b.toString());
 	}
 
-	public static PlayerSkill fromInteger(Integer i) {
-		if (i != null) {
-			for (var s : PlayerSkill.values()) {
-				if (s.id == i) {
-					return s;
-				}
-			}
-		}
-		return null;
-	}
+    public static PlayerSkill fromInteger(Integer i) {
+        return MAP_ID_TO_PLAYER_SKILL.getOrDefault(i, null);
+    }
 
 	public String getXMLElementName(){
 		return switch (this){
