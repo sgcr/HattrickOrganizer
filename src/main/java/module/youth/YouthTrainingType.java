@@ -5,12 +5,20 @@ import core.model.TranslationFacility;
 import core.model.player.MatchRoleID;
 import core.training.WeeklyTrainingType;
 import core.training.type.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static core.constants.TrainingType.*;
 
+@Getter
+@RequiredArgsConstructor
 public enum YouthTrainingType {
 
 /*
@@ -57,10 +65,6 @@ public enum YouthTrainingType {
 
     private final int value;
 
-    YouthTrainingType(int value) {
-        this.value = value;
-    }
-
     public static String StringValueOf(YouthTrainingType value) {
         if ( value == null) return TranslationFacility.tr("ls.youth.trainingtype.undefined");
         return TranslationFacility.tr("ls.youth.trainingtype."+value._toString());
@@ -75,23 +79,14 @@ public enum YouthTrainingType {
         return StringValueOf(this);
     }
 
-    public int getValue() {
-        return value;
-    }
-
+    private static final Map<Integer, YouthTrainingType> MAP_VALUE_TO_ENUM_VALUE =
+        Arrays.stream(values()).collect(Collectors.toMap(YouthTrainingType::getValue, Function.identity()));
 
     public static YouthTrainingType valueOf(Integer id) {
-        if ( id != null) {
-            for (YouthTrainingType youthTrainingType : YouthTrainingType.values()) {
-                if (youthTrainingType.getValue() == id) {
-                    return youthTrainingType;
-                }
-            }
-        }
-        return null;
+        return MAP_VALUE_TO_ENUM_VALUE.getOrDefault(id, null);
     }
 
-    public static Integer getValue(YouthTrainingType type){
+    public static Integer getValueNullSafe(YouthTrainingType type){
         if ( type != null){
             return type.getValue();
         }
