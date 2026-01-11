@@ -26,14 +26,14 @@ class PlayerCategoryTest {
     @Test
     void categoryIdFrom1To13IsDefined() {
         final var allIds = Stream.of(PlayerCategory.values()).map(PlayerCategory::getId).collect(Collectors.toSet());
-        IntStream.range(1, 13).forEach(i -> assertThat(allIds.contains(i)).isTrue());
+        IntStream.range(1, 13).forEach(i -> assertThat(allIds).contains(i));
     }
 
     @Test
     void notCategoryIdIsDefinedMoreThanOnce() {
         final var mapIdToFrequency = Stream.of(PlayerCategory.values())
             .collect(Collectors.groupingBy(PlayerCategory::getId, Collectors.counting()));
-        mapIdToFrequency.forEach((id, frequency) -> assertThat(frequency == 1).isTrue());
+        mapIdToFrequency.forEach((id, frequency) -> assertThat(frequency ).isSameAs(1L));
     }
 
     private static Stream<Arguments> valueOf() {

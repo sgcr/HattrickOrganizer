@@ -10,9 +10,14 @@ import core.model.enums.MatchType;
 import core.model.player.Specialty;
 import core.util.HODateTime;
 import core.util.HOLogger;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static core.model.match.MatchEvent.MatchEventID.SPECTATORS_OR_VENUE_RAIN;
@@ -31,7 +36,11 @@ public class MatchEvent extends AbstractTable.Storable {
 
     private int m_iGehilfeID;
     private int m_iMatchEventID;
+    @Setter
+    @Getter
     private Integer eventVariation;
+    @Setter
+    @Getter
     private HODateTime matchDate;
 
     public int getMatchEventIndex() {
@@ -46,6 +55,8 @@ public class MatchEvent extends AbstractTable.Storable {
 
     private MatchEventID m_matchEventID;
 
+    @Setter
+    @Getter
     private MatchPartId matchPartId;
 
     private int m_iMinute;
@@ -55,45 +66,17 @@ public class MatchEvent extends AbstractTable.Storable {
     private int m_iTeamID;
 
     private int matchId;
+    @Setter
+    @Getter
     private MatchType matchType;
-
-    public MatchPartId getMatchPartId() {
-        return matchPartId;
-    }
-
-    public void setMatchPartId(MatchPartId matchPartId) {
-        this.matchPartId = matchPartId;
-    }
-
-    public void setEventVariation(Integer iEventVariation) {
-        this.eventVariation = iEventVariation;
-    }
-
-    public Integer getEventVariation() {
-        return eventVariation;
-    }
 
     public boolean isEndOfMatchEvent() {
         return m_iMatchEventID >= 599 && m_iMatchEventID <= 606;
     }
 
-    public MatchType getMatchType() {
-        return matchType;
-    }
 
-    public void setMatchType(MatchType matchType) {
-        this.matchType = matchType;
-    }
-
-    public HODateTime getMatchDate() {
-        return this.matchDate;
-    }
-
-    public void setMatchDate(HODateTime matchDate) {
-        this.matchDate = matchDate;
-    }
-
-
+    @Getter
+    @RequiredArgsConstructor
     public enum MatchEventID {
         UNKNOWN_MATCHEVENT(-1),
         PLAYERS_ENTER_THE_FIELD(19), TACTICAL_DISPOSITION(20), PLAYER_NAMES_IN_LINEUP(21), PLAYERS_FROM_NEIGHBORHOOD_USED(22), SAME_FORMATION_BOTH_TEAMS(23), TEAM_FORMATIONS_DIFFERENT(24),
@@ -176,34 +159,20 @@ public class MatchEvent extends AbstractTable.Storable {
 
         private final int value;
 
-        MatchEventID(final int newValue) {
-            value = newValue;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        // Reverse-lookup map for getting a MatchEvent from its value
-        private static final HashMap<Integer, MatchEventID> lookup = new HashMap<>();
-
-        static {
-            for (MatchEventID me : MatchEventID.values()) {
-                lookup.put(me.getValue(), me);
-            }
-        }
+        private static final Map<Integer, MatchEventID> MAP_VALUE_TO_ENUM_VALUE =
+            Arrays.stream(values()).collect(Collectors.toMap(MatchEventID::getValue, Function.identity()));
 
         public static MatchEventID fromMatchEventID(int iMatchEventID) {
-            MatchEventID ret = lookup.get(iMatchEventID);
-            if (ret == null) {
-                ret = UNKNOWN_MATCHEVENT;
-                HOLogger.instance().log(MatchEventID.class, "UNKNOWN_MATCHEVENT: " + iMatchEventID);
-            }
-            return ret;
+            return Optional.ofNullable(MAP_VALUE_TO_ENUM_VALUE.get(iMatchEventID))
+                .orElseGet(() -> {
+                    HOLogger.instance().log(MatchEventID.class, "UNKNOWN_MATCHEVENT: " + iMatchEventID);
+                    return UNKNOWN_MATCHEVENT;
+                });
         }
-
     }
 
+    @Getter
+    @RequiredArgsConstructor
     public enum MatchPartId {
         BEFORE_THE_MATCH_STARTED(0),
         FIRST_HALF(1),
@@ -213,40 +182,22 @@ public class MatchEvent extends AbstractTable.Storable {
 
         private final int value;
 
-        MatchPartId(final int newValue) {
-            value = newValue;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        // Reverse-lookup map for getting a MatchEvent from its value
-        private static final HashMap<Integer, MatchPartId> lookup = new HashMap<>();
-
-        static {
-            for (MatchPartId me : MatchPartId.values()) {
-                lookup.put(me.getValue(), me);
-            }
-        }
+        private static final Map<Integer, MatchPartId> MAP_VALUE_TO_MATCH_PART_ID =
+            Arrays.stream(values()).collect(Collectors.toMap(MatchPartId::getValue, Function.identity()));
 
         public static MatchPartId fromMatchPartId(Integer iMatchPartId) {
-            if (iMatchPartId == null) return null;
-            MatchPartId ret = lookup.get(iMatchPartId);
-            if (ret == null) {
-                HOLogger.instance().log(MatchPartId.class, "UNKNOWN_MATCHPART: " + iMatchPartId);
-            }
-            return ret;
+            return Optional.ofNullable(iMatchPartId)
+                .map(id -> Optional.ofNullable(MAP_VALUE_TO_MATCH_PART_ID.get(id))
+                    .orElseGet(() -> {
+                        HOLogger.instance().log(MatchPartId.class, "UNKNOWN_MATCHPART: " + id);
+                        return null;
+                    }))
+                .orElse(null);
         }
 
         public static Integer toInteger(MatchPartId id) {
-            if (id == null) return null;
-            return id.value;
+            return Optional.ofNullable(id).map(MatchPartId::getValue).orElse(null);
         }
-    }
-
-    public Matchdetails.eInjuryType getM_eInjuryType() {
-        return m_eInjuryType;
     }
 
     public void setM_eInjuryType(Matchdetails.eInjuryType m_eInjuryType) {
@@ -257,6 +208,7 @@ public class MatchEvent extends AbstractTable.Storable {
         this.m_eInjuryType = Matchdetails.eInjuryType.fromInteger(i_InjuryType);
     }
 
+    @Getter
     public Matchdetails.eInjuryType m_eInjuryType;
 
     /**
@@ -751,7 +703,7 @@ public class MatchEvent extends AbstractTable.Storable {
     }
 
     /**
-     * Check, if it is a Specialty Special Event, i.e SE but not weather
+     * Check, if it is a Specialty Special Event, i.e. SE but not weather
      */
     public boolean isSpecialtyNonWeatherSE() {
         return (this.isSE() && (!this.isSpecialtyWeatherSE()));
