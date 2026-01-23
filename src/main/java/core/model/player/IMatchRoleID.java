@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 /**
  *
  * MatchRoleID according to CHPP documentation.
- * 
+ *
  * @author akaSolace
  */
 public interface IMatchRoleID {
@@ -111,8 +111,10 @@ public interface IMatchRoleID {
     byte OLD_EXTRA_MIDFIELD = 6;
     byte OLD_EXTRA_DEFENDER = 7;
     byte OLD_EXTRA_DEFENSIVE_FORWARD = 8;
-    
-  
+    // TODO: matchorders V3.1: Unclear in API documentation.
+    // -1 means 'No change' for MatchBehaviourID but within the bench there is no MatchBehaviourID
+    byte INHERIT_BEHAVIOUR = -1;
+
     //Constants to identify the 22 possible combination of position and Behaviour
 
     byte NUM_POSITIONS = 22;
@@ -148,7 +150,7 @@ public interface IMatchRoleID {
     byte UNSELECTABLE = 101;
     List<Integer> aPositionBehaviours = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 21);
 
-    
+
     // The old role IDs used for mapping old data to new format
      List<Integer> oldKeeper = List.of(1);
      List<Integer>oldRightBack = List.of(2);
@@ -166,5 +168,5 @@ public interface IMatchRoleID {
      List<Integer>oldSubstMidfielder = List.of(14, 116);
      List<Integer>oldSubstWinger = List.of(15, 117);
      List<Integer>oldSubstForward = List.of(16, 118);
-    
+
 }
