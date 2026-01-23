@@ -919,7 +919,7 @@ public class RatingPredictionModel {
         return rhsPositions.contains(roleId);
     }
 
-    int togglePositionSide(int roleId) {
+    private static int togglePositionSide(int roleId) {
         switch (roleId) {
             case rightBack -> {
                 return leftBack;
