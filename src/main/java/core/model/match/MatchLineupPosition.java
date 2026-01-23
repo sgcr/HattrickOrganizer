@@ -88,7 +88,7 @@ public class MatchLineupPosition  extends MatchRoleID {
         this.setId(roleId);
     }
 
-    public final byte getBehaviour(){
+    public byte getBehaviour(){
         return  this.getTactic();
     }
 
@@ -119,7 +119,7 @@ public class MatchLineupPosition  extends MatchRoleID {
     public final void setRating(double m_dRating) {
         this.m_dRating = m_dRating;
     }
-    
+
     /**
      * Setter for property m_dRatingStarsEndOfMatch.
      *
@@ -128,11 +128,11 @@ public class MatchLineupPosition  extends MatchRoleID {
     public final void setRatingStarsEndOfMatch(double m_dRatingStarsEndOfMatch) {
         this.m_dRatingStarsEndOfMatch = m_dRatingStarsEndOfMatch;
     }
-    
+
 
     /////////////////////////////////////////////////////////////////////////////////
     //ACCESSOR
-    //////////////////////////////////////////////////////////////////////////////////    
+    //////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Getter for property RatingStarsEndOfMatch.
@@ -142,7 +142,7 @@ public class MatchLineupPosition  extends MatchRoleID {
     public final double getRatingStarsEndOfMatch() {
         return m_dRatingStarsEndOfMatch;
     }
-    
+
     /**
      * Getter for property m_dRating.
      *
@@ -214,28 +214,28 @@ public class MatchLineupPosition  extends MatchRoleID {
     public int getStartPosition() {
     	return m_iStartPosition;
     }
-    
+
     /**
      * @param startPosition the startPosition to set
      */
     public void setStartPosition(int startPosition) {
     	this.m_iStartPosition = startPosition;
     }
-    
+
     /**
      * @return the startBehavior
      */
     public int getStartBehavior() {
     	return m_iStartBehavior;
     }
-    
+
     /**
      * @param startBehavior the startBehavior to set
      */
     public void setStartBehavior(int startBehavior) {
     	this.m_iStartBehavior = startBehavior;
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////////
     //Helper
     ////////////////////////////////////////////////////////////////////////////////
