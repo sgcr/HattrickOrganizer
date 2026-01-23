@@ -11,9 +11,11 @@ import core.model.match.MatchLineupTeam;
 import core.model.player.IMatchRoleID;
 import core.model.player.MatchRoleID;
 import core.model.player.Player;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
@@ -111,10 +113,11 @@ public class AufstellungsSternePanel extends RasenPanel {
         if (lineupteam.getLineup().getAllPositions().stream().map(MatchLineupPosition::getFirstName).allMatch(String::isEmpty) ) {
             lineupteam.getLineup().getAllPositions()
                 .forEach(matchLineupPosition -> {
-                    var parts = matchLineupPosition.getLastName().split("\\s");
-                    if (parts.length == 2) {
-                        matchLineupPosition.setFirstName(parts[0]);
-                        matchLineupPosition.setLastName(parts[1]);
+                    final var parts = matchLineupPosition.getLastName().split("\\s");
+                    if (parts.length >= 2) {
+                        final var newFirstName = String.join(StringUtils.SPACE, Arrays.asList(parts).subList(0, (parts.length - 1)));
+                        matchLineupPosition.setFirstName(newFirstName);
+                        matchLineupPosition.setLastName(parts[parts.length-1]);
                     }
                 });
         }

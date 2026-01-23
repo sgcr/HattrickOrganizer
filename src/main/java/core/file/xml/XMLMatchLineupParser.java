@@ -18,6 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -210,11 +211,7 @@ public class XMLMatchLineupParser {
             firstName = StringUtils.EMPTY;
             lastName = parts[0];
         } else {
-            List<String> strLst = new ArrayList();
-            for (int i = 0; i < parts.length - 1; ++i) {
-                strLst.add(parts[i]);
-            }
-            firstName = String.join(" ", strLst);
+            firstName = String.join(StringUtils.SPACE, Arrays.asList(parts).subList(0, (parts.length - 1)));
             lastName = parts[parts.length - 1];
         }
         return Pair.of(firstName, lastName);

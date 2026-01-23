@@ -85,12 +85,21 @@
 There is a general new feature that allows to define the way a name of a player is displayed.
 These spots are affected:
 
-* `Squad` / Content of `Name` column.
-* `Squad` / Player Details Panel: The name on that card.
-* `Lineup` / Position
-* `Lineup` / Substitutes
-* `Lineup` / List of players
-* `Matches` / Formation
+* Tab `Squad`: Content of `Name` column.
+* Tab `Squad`: Player Details Panel: The name on that card.
+* Tab `Lineup`: Position
+* Tab `Lineup`: Substitutes
+* Tab `Lineup`: List of players
+* Tab `Matches`: Formation
+* Tab `Player Analysis`: Combo box with player names
+* Tab `Statistics` / `Player`: Combo box with player names
+* Tab `Training` / `Training`: List of players
+* Tab `Training` / `Prediction`: List of players
+* Tab `Training` / `Analyzer`: List of players
+* Tab `Team Analyser`
+* Tab `Special Events`: Combo box with player names
+* Tab `Best/Worst Team`
+* Tab `Youth`
 
 Reports by Contributors - October 19, 2025 - December 30, 2025
 
