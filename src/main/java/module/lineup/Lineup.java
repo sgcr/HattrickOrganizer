@@ -823,7 +823,13 @@ public class Lineup{
 		return m_vFieldPositions;
 	}
 
-	public Vector<MatchLineupPosition> getReplacedPositions(){return replacedPositions;}
+    public Optional<MatchLineupPosition> findFieldPositionByRoleId(int roleId) {
+        return getFieldPositions().stream()
+            .filter(matchLineupPosition -> matchLineupPosition.getRoleId() == roleId)
+            .findFirst();
+    }
+
+    public Vector<MatchLineupPosition> getReplacedPositions(){return replacedPositions;}
 	public Vector<MatchLineupPosition> getRedCardedPositions(){return redCardedPositions;}
 
 	/**
