@@ -298,7 +298,7 @@ public class Connector {
 	}
 
 	private String getMatchOrdersURl() {
-		return htUrl + "?file=matchorders&version=3.0";
+		return htUrl + "?file=matchorders&version=3.1";
 	}
 
 	/**
