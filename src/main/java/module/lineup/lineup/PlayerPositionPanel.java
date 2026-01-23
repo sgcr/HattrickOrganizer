@@ -13,11 +13,13 @@ import core.model.HOModel;
 import core.model.HOVerwaltung;
 import core.model.TranslationFacility;
 import core.model.UserParameter;
+import core.model.match.MatchLineupPosition;
 import core.model.match.Weather;
 import core.model.player.IMatchRoleID;
 import core.model.player.MatchRoleID;
 import core.model.player.Player;
 import core.training.TrainingPreviewPlayers;
+import core.util.HOLogger;
 import core.util.Helper;
 import module.lineup.Lineup;
 import module.lineup.LineupAssistantSelectorOverlay;
@@ -29,10 +31,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 import static core.model.UserParameter.GOALKEEPER_AT_TOP;
 import static core.model.UserParameter.POSITIONNAMES_SHORT;
@@ -163,7 +163,7 @@ public class PlayerPositionPanel extends ImagePanel implements ItemListener, Foc
     }
 
     @Override
-    public void itemStateChanged(java.awt.event.ItemEvent itemEvent) {
+    public void itemStateChanged(ItemEvent itemEvent) {
         if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
             final Lineup lineup = HOVerwaltung.instance().getModel().getCurrentLineup();
 
@@ -489,7 +489,7 @@ public class PlayerPositionPanel extends ImagePanel implements ItemListener, Foc
 
         cbItems = Arrays.stream(cbItems).filter(Objects::nonNull).toArray(PlayerCBItem[]::new);
 
-        java.util.Arrays.sort(cbItems);
+        Arrays.sort(cbItems);
 
         for (PlayerCBItem cbItem : cbItems) {
             //All Other players
@@ -577,65 +577,213 @@ public class PlayerPositionPanel extends ImagePanel implements ItemListener, Foc
         return MatchRoleID.getNameForPosition(position);
     }
 
-    private void initTaktik(@Nullable Player aktuellerPlayer) {
+    private void initTaktik(@Nullable Player currentPlayer) {
         m_jcbTactic.removeAllItems();
 
         switch (m_iPositionID) {
             case keeper -> m_jcbTactic.addItem(new CBItem(getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL));
             case IMatchRoleID.rightBack, IMatchRoleID.leftBack, IMatchRoleID.leftWinger, IMatchRoleID.rightWinger -> {
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.towardsmiddle"), IMatchRoleID.TOWARDS_MIDDLE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardsmiddle"), IMatchRoleID.TOWARDS_MIDDLE);
             }
             case IMatchRoleID.rightCentralDefender, IMatchRoleID.leftCentralDefender -> {
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
             }
             case IMatchRoleID.middleCentralDefender -> {
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
             }
             case IMatchRoleID.rightInnerMidfield, IMatchRoleID.leftInnerMidfield -> {
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
             }
             case IMatchRoleID.centralInnerMidfield -> {
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
             }
             case IMatchRoleID.rightForward, IMatchRoleID.leftForward -> {
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
             }
             case IMatchRoleID.centralForward -> {
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
-                addTactic(aktuellerPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+            }
+            case IMatchRoleID.substCD1, IMatchRoleID.substCD2, IMatchRoleID.substIM1, IMatchRoleID.substIM2 -> {
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.inherit_behaviour"), IMatchRoleID.INHERIT_BEHAVIOUR);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
+            }
+            case IMatchRoleID.substWB1, IMatchRoleID.substWB2 -> {
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.inherit_behaviour"), IMatchRoleID.INHERIT_BEHAVIOUR);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.offensive"), IMatchRoleID.OFFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardsmiddle"), IMatchRoleID.TOWARDS_MIDDLE);
+            }
+            case IMatchRoleID.substFW1, IMatchRoleID.substFW2 -> {
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.inherit_behaviour"), IMatchRoleID.INHERIT_BEHAVIOUR);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardswing"), IMatchRoleID.TOWARDS_WING);
+            }
+            case IMatchRoleID.substWI1 , IMatchRoleID.substWI2 -> {
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.inherit_behaviour"), IMatchRoleID.INHERIT_BEHAVIOUR);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.normal"), IMatchRoleID.NORMAL);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.defensive"), IMatchRoleID.DEFENSIVE);
+                addTactic(currentPlayer, getLangStr("ls.player.behaviour.towardsmiddle"), IMatchRoleID.TOWARDS_MIDDLE);
             }
             default -> m_jcbTactic.addItem(new CBItem(getLangStr("ls.player.behaviour.normal"),
                     IMatchRoleID.NORMAL));
         }
     }
 
-    private void addTactic(@Nullable Player currentPlayer, String text, byte playerPosition) {
+    private void addTactic(@Nullable Player currentPlayer, String text, final byte behavior) {
         if (currentPlayer != null) {
             var ratingPredictionModel = HOVerwaltung.instance().getModel().getRatingPredictionModel();
-            double rating;
-            if ( matchMinute == null || matchMinute < 0 || matchMinute >= 120) {
-                rating = ratingPredictionModel.getPlayerMatchAverageRating(currentPlayer, m_iPositionID, playerPosition);
+
+            var positionIdForRating = m_iPositionID;
+            var behaviorForRating = behavior;
+            if (isSubstitutesBenchPosition(m_iPositionID)) {
+                positionIdForRating = substitutionPositionIdToFieldPositionId(m_iPositionID);
+
+                if (behavior == IMatchRoleID.INHERIT_BEHAVIOUR) {
+                    behaviorForRating = computeInheritedBehaviorFrom(m_iPositionID, behavior);
+                } else if (behavior == IMatchRoleID.TOWARDS_WING) {
+                    if (m_iPositionID == substCD1 || m_iPositionID == substCD2) {
+                        positionIdForRating = leftCentralDefender;
+                    } else if (m_iPositionID == substIM1 || m_iPositionID == substIM2) {
+                        positionIdForRating = leftInnerMidfield;
+                    } else if (m_iPositionID == substFW1 || m_iPositionID == substFW2) {
+                        positionIdForRating = leftForward;
+                    }
+                }
             }
-            else {
-                rating = ratingPredictionModel.getPlayerRating(currentPlayer, m_iPositionID, playerPosition, matchMinute);
+
+            double rating;
+            if (matchMinute == null || matchMinute < 0 || matchMinute >= 120) {
+                rating = ratingPredictionModel.getPlayerMatchAverageRating(currentPlayer, positionIdForRating, behaviorForRating);
+            } else {
+                rating = ratingPredictionModel.getPlayerRating(currentPlayer, positionIdForRating, behaviorForRating, matchMinute);
             }
             text += String.format(" (%.2f)", rating);
+            HOLogger.instance().debug(getClass(), "%s (%s) ==> %s (%s): %.2f".formatted(
+                positionIdToString(m_iPositionID), behavior,
+                positionIdToString(positionIdForRating), behaviorForRating, rating));
         }
-        m_jcbTactic.addItem(new CBItem(text, playerPosition));
+        m_jcbTactic.addItem(new CBItem(text, behavior));
     }
+
+    private static boolean isSubstitutesBenchPosition(int positionId) {
+        return IMatchRoleID.aSubsAndBackupssMatchRoleID.contains(positionId);
+    }
+
+    private static byte computeInheritedBehaviorFrom(int positionId, byte behaviour) {
+        final Lineup lineup = Optional.ofNullable(HOVerwaltung.instance())
+            .map(HOVerwaltung::getModel)
+            .map(HOModel::getCurrentLineup)
+            .orElse(null);
+        if (lineup == null ) {
+            return behaviour;
+        }
+
+        return switch (positionId) {
+            case IMatchRoleID.substGK1, IMatchRoleID.substGK2, IMatchRoleID.substXT1, IMatchRoleID.substXT2 ->
+                behaviour;
+            case IMatchRoleID.substCD1, IMatchRoleID.substCD2 ->
+                getBehaviour(lineup, List.of(IMatchRoleID.middleCentralDefender, IMatchRoleID.leftCentralDefender, IMatchRoleID.rightCentralDefender));
+            case IMatchRoleID.substWB1, IMatchRoleID.substWB2 ->
+                getBehaviour(lineup, List.of(IMatchRoleID.leftBack, IMatchRoleID.rightBack));
+            case IMatchRoleID.substIM1, IMatchRoleID.substIM2 ->
+                getBehaviour(lineup, List.of(IMatchRoleID.centralInnerMidfield, IMatchRoleID.leftInnerMidfield, IMatchRoleID.rightInnerMidfield));
+            case IMatchRoleID.substFW1, IMatchRoleID.substFW2 ->
+                getBehaviour(lineup, List.of(IMatchRoleID.centralForward, IMatchRoleID.leftForward, IMatchRoleID.rightForward));
+            case IMatchRoleID.substWI1, IMatchRoleID.substWI2 ->
+                getBehaviour(lineup, List.of(IMatchRoleID.leftWinger, IMatchRoleID.rightWinger));
+            default ->
+                throw new IllegalArgumentException("Cannot compute inherited behavior for player position %d that is not substitutes position.".formatted(positionId));
+        };
+    }
+
+    private static int substitutionPositionIdToFieldPositionId(int positionId) {
+        return switch (positionId) {
+            case IMatchRoleID.substGK1, IMatchRoleID.substGK2 ->
+                IMatchRoleID.keeper;
+            case IMatchRoleID.substCD1, IMatchRoleID.substCD2 ->
+                IMatchRoleID.middleCentralDefender;
+            case IMatchRoleID.substWB1, IMatchRoleID.substWB2 ->
+                IMatchRoleID.leftBack;
+            case IMatchRoleID.substIM1, IMatchRoleID.substIM2 ->
+                IMatchRoleID.centralInnerMidfield;
+            case IMatchRoleID.substFW1, IMatchRoleID.substFW2 ->
+                IMatchRoleID.centralForward;
+            case IMatchRoleID.substWI1, IMatchRoleID.substWI2 ->
+                IMatchRoleID.leftWinger;
+            default ->
+                throw new IllegalArgumentException("Cannot convert positionId %d to field positionId".formatted(positionId));
+        };
+    }
+
+    private static String positionIdToString(int positionId) {
+        return switch (positionId) {
+            case keeper -> "keeper";
+            case rightBack -> "rightBack";
+            case rightCentralDefender -> "rightCentralDefender";
+            case middleCentralDefender -> "middleCentralDefender";
+            case leftCentralDefender -> "leftCentralDefender";
+            case leftBack -> "leftBack";
+            case rightWinger -> "rightWinger";
+            case rightInnerMidfield -> "rightInnerMidfield";
+            case centralInnerMidfield -> "centralInnerMidfield";
+            case leftInnerMidfield -> "leftInnerMidfield";
+            case leftWinger -> "leftWinger";
+            case rightForward -> "rightForward";
+            case centralForward -> "centralForward";
+            case leftForward -> "leftForward";
+            case substGK1 -> "substGK1";
+            case substCD1 -> "substCD1";
+            case substWB1 -> "substWB1";
+            case substIM1 -> "substIM1";
+            case substFW1 -> "substFW1";
+            case substWI1 -> "substWI1";
+            case substXT1 -> "substXT1";
+            case substGK2 -> "substGK2";
+            case substCD2 -> "substCD2";
+            case substWB2 -> "substWB2";
+            case substIM2 -> "substIM2";
+            case substFW2 -> "substFW2";
+            case substWI2 -> "substWI2";
+            case substXT2 -> "substXT2";
+            default ->
+                throw new IllegalArgumentException("Cannot convert positionId %d to string".formatted(positionId));
+        };
+    }
+
+    private static byte getBehaviour(Lineup lineup, List<Integer> roleIds) {
+        if (roleIds.isEmpty()) {
+            throw new IllegalArgumentException("Cannot get behavior of empty set of role ids.");
+        }
+
+        final var matchLineupPosition = roleIds.stream()
+            .map(lineup::findFieldPositionByRoleId)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
+
+        return matchLineupPosition
+            .map(MatchLineupPosition::getBehaviour)
+            .orElse(IMatchRoleID.NORMAL);
+    }
+
     //-------------private-------------------------------------------------
 
     private PlayerCBItem createPlayerCBItem(PlayerCBItem item, @Nullable Player player) {
@@ -651,7 +799,7 @@ public class PlayerPositionPanel extends ImagePanel implements ItemListener, Foc
                 item.setValues(playerName,
                         Helper.round(
                                 HOVerwaltung.instance().getModel().getCurrentLineup().getAverageExperience(player.getPlayerId()),
-                                core.model.UserParameter.instance().nbDecimals),
+                                UserParameter.instance().nbDecimals),
                         player, true);
                 return item;
             } else {
