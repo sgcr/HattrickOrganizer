@@ -97,7 +97,11 @@ These spots are affected:
 * Tab `Training` / `Prediction`: List of players
 * Tab `Training` / `Analyzer`: List of players
 * Tab `Team Analyser`
-* Tab `Special Events`: Combo box with player names
+  * Special Events
+  * Field
+* Tab `Special Events`:
+  * Combo box with player names
+  * `Player` column of each event
 * Tab `Best/Worst Team`
 * Tab `Youth`
 
