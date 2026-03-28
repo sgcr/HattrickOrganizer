@@ -8,7 +8,7 @@ Updates to a newer version should be documented here in the `Used Version` colum
 | File                   | Description                                                                                 | Available Version (Date) | Used Version |
 |------------------------|---------------------------------------------------------------------------------------------|--------------------------|--------------|
 | achievements           | The achievements of a specific user.                                                        | 1.2 (2021-08-03)         | -            |
-| arenadetails           | Information about specific arenas, supporter statistics and the largest arenas in Hattrick. | 1.7 (2023-02-08)         | 1.3          |
+| arenadetails           | Information about specific arenas, supporter statistics and the largest arenas in Hattrick. | 1.7 (2023-02-08)         | 1.7          |
 | alliances              | Alliance / Federation search                                                                | 1.4 (2013-03-04)         | -            |
 | alliancedetails        | Alliance / Federation information                                                           | 1.5 (2013-03-04)         | -            |
 | avatars                | Avatars for all players of user's team                                                      | 1.1 (2013-01-08)         | 1.1          |
