@@ -1,8 +1,10 @@
 package core.model;
 
+import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import java.util.MissingResourceException;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -64,30 +66,36 @@ class TranslationFacilityTest {
     @Test
     void tr() {
         // given
-        TranslationFacility.setLanguage("English");
-        final var key = "ls.module.lineup.coachtype.offensive";
+        final var key = "key";
+        final var expectedTranslation = "value";
+        Translator translator = createTranslator("Custom", Map.ofEntries(Map.entry(key, expectedTranslation)));
+        TranslationFacility.setTranslator(translator);
 
         // when
         final var translation = TranslationFacility.tr(key);
 
         // then
-        assertThat(translation).isEqualTo("Offensive");
+        assertThat(translation).isEqualTo(expectedTranslation);
     }
 
     @Test
     void trSingularOrPlural() {
         // given
-        TranslationFacility.setLanguage("English");
-        final var keySingular = "ls.module.lineup.coachtype.offensive";
-        final var keyPlural = "ls.module.lineup.coachtype.defensive";
+        final var keySingular = "singular";
+        final var keyPlural = "plural";
+        final var expectedTranslationSingular = "person";
+        final var expectedTranslationPlural = "people";
+        Translator translator = createTranslator("Custom",
+            Map.ofEntries(Map.entry(keySingular, expectedTranslationSingular), Map.entry(keyPlural, expectedTranslationPlural)));
+        TranslationFacility.setTranslator(translator);
 
         // when
         final var translationSingular = TranslationFacility.trSingularOrPlural(true, keySingular, keyPlural);
         final var translationPlural = TranslationFacility.trSingularOrPlural(false, keySingular, keyPlural);
 
         // then
-        assertThat(translationSingular).isEqualTo("Offensive");
-        assertThat(translationPlural).isEqualTo("Defensive");
+        assertThat(translationSingular).isEqualTo(expectedTranslationSingular);
+        assertThat(translationPlural).isEqualTo(expectedTranslationPlural);
     }
 
     @Test
@@ -100,5 +108,27 @@ class TranslationFacilityTest {
 
         // then
         assertThat(translation).isEqualTo("since EVER");
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Translator createTranslator(String language, Map<String, String > translations) {
+        return new Translator(language, new ResourceBundleFromMap(translations));
+    }
+
+    private static final class ResourceBundleFromMap extends ResourceBundle {
+        private final Map<String, String> translations;
+        public ResourceBundleFromMap(Map<String, String> translations) {
+            super();
+            this.translations = translations;
+        }
+        @Override
+        protected Object handleGetObject(@NotNull String key) {
+            return Optional.ofNullable(translations.get(key)).orElseThrow();
+        }
+
+        @Override
+        public @NotNull Enumeration<String> getKeys() {
+            throw new NotImplementedException();
+        }
     }
 }
