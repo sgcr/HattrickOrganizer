@@ -62,6 +62,35 @@ class TranslationFacilityTest {
     }
 
     @Test
+    void tr() {
+        // given
+        TranslationFacility.setLanguage("English");
+        final var key = "ls.module.lineup.coachtype.offensive";
+
+        // when
+        final var translation = TranslationFacility.tr(key);
+
+        // then
+        assertThat(translation).isEqualTo("Offensive");
+    }
+
+    @Test
+    void trSingularOrPlural() {
+        // given
+        TranslationFacility.setLanguage("English");
+        final var keySingular = "ls.module.lineup.coachtype.offensive";
+        final var keyPlural = "ls.module.lineup.coachtype.defensive";
+
+        // when
+        final var translationSingular = TranslationFacility.trSingularOrPlural(true, keySingular, keyPlural);
+        final var translationPlural = TranslationFacility.trSingularOrPlural(false, keySingular, keyPlural);
+
+        // then
+        assertThat(translationSingular).isEqualTo("Offensive");
+        assertThat(translationPlural).isEqualTo("Defensive");
+    }
+
+    @Test
     void tr_with_variables() {
         // given
         TranslationFacility.setLanguage("English");
