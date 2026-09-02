@@ -727,7 +727,7 @@ public class YouthPlayer extends AbstractTable.Storable {
     public int getAgeYearsAtDate(HODateTime t) {
         var hrfTime = HOVerwaltung.instance().getModel().getBasics().getDatum();
         var diff = HODateTime.HODuration.between(hrfTime, t);
-        return new HODateTime.HODuration(this.getAgeYears(), this.getAgeDays()).plus(diff).seasons;
+        return new HODateTime.HODuration(this.getAgeYears(), this.getAgeDays()).plus(diff).getSeasons();
     }
 
     public YouthSkillsInfo getCurrentSkills() {

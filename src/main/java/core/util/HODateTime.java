@@ -417,21 +417,36 @@ public class HODateTime implements Comparable<HODateTime> {
         return new HODateTime(newInstant);
     }
 
-    public static class HODuration implements Comparable<HODuration>{
-        public int seasons;
-        public int days;
+    public static class HODuration implements Comparable<HODuration> {
 
-        public HODuration(int inSeasons, int inDays) {
-            this.seasons = inSeasons;
-            this.days = inDays;
-            while (days > 111) {
-                days -= 112;
+        private static final int DAYS_PER_SEASON = 7 * 16;
+
+        private int seasons;
+        private int days;
+
+        public HODuration(int seasons, int days) {
+            this.seasons = seasons;
+            this.days = days;
+            normalize();
+        }
+
+        private void normalize() {
+            while (days > DAYS_PER_SEASON) {
+                days -= DAYS_PER_SEASON;
                 seasons++;
             }
             while (days < 0) {
-                days += 112;
+                days += DAYS_PER_SEASON;
                 seasons--;
             }
+        }
+
+        public int getSeasons() {
+            return seasons;
+        }
+
+        public int getDays() {
+            return days;
         }
 
         public static HODuration between(HODateTime from, HODateTime to) {
@@ -439,23 +454,28 @@ public class HODateTime implements Comparable<HODateTime> {
         }
 
         public HODuration plus(HODuration diff) {
-            return new HODuration(this.seasons + diff.seasons, this.days + diff.days);
+            return new HODuration(seasons + diff.seasons, days + diff.days);
         }
 
         public HODuration minus(HODuration diff) {
-            return new HODuration(this.seasons - diff.seasons, this.days - diff.days);
+            return new HODuration(seasons - diff.seasons, days - diff.days);
         }
 
-        public String toString(){
+        public String toString() {
             return seasons + " (" + days + ")";
         }
-        public double toDouble() { return seasons + days/112.; }
+
+        public double toDouble() {
+            return seasons + days / (double) DAYS_PER_SEASON;
+        }
 
         @Override
         public int compareTo(@NotNull HODateTime.HODuration o) {
-            int ret = Integer.compare(this.seasons, o.seasons);
-            if (ret==0) ret = Integer.compare(this.days, o.days);
-            return ret;
+            int result = Integer.compare(this.seasons, o.seasons);
+            if (result == 0) {
+                result = Integer.compare(this.days, o.days);
+            }
+            return result;
         }
     }
 

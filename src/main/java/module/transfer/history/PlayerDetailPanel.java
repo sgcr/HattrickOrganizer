@@ -343,7 +343,7 @@ public class PlayerDetailPanel extends JPanel implements ActionListener {
                 }
 
                 var activeDuration = HODateTime.HODuration.between(arrivalDate, to);
-                if (activeDuration.seasons >= 0) {
+                if (activeDuration.getSeasons() >= 0) {
                     lengthOfStayInTeam.setText(activeDuration.toString());
                 }
                 var sum = this.player.getSumOfWage(arrivalDate, to);

@@ -605,7 +605,7 @@ public class Player extends AbstractTable.Storable {
      */
     public static String getAgeWithDaysAsString(int ageYears, int ageDays, HODateTime time, HODateTime hrfTime) {
         var age = new HODateTime.HODuration(ageYears, ageDays).plus(HODateTime.HODuration.between(hrfTime, time));
-        return age.seasons + " (" + age.days + ")";
+        return age.getSeasons() + " (" + age.getDays() + ")";
     }
 
     public HODateTime.HODuration getAgeAtDate(HODateTime date) {
@@ -624,13 +624,13 @@ public class Player extends AbstractTable.Storable {
         var hrfTime = HOVerwaltung.instance().getModel().getBasics().getDatum();
         var oldAge = new HODateTime.HODuration(this.getAge(), this.getAgeDays());
         var age = oldAge.plus(HODateTime.HODuration.between(hrfTime, HODateTime.now()));
-        var birthday = oldAge.seasons != age.seasons;
+        var birthday = oldAge.getSeasons() != age.getSeasons();
         StringBuilder ret = new StringBuilder();
-        ret.append(age.seasons);
+        ret.append(age.getSeasons());
         ret.append(" ");
         ret.append(TranslationFacility.tr("ls.player.age.years"));
         ret.append(" ");
-        ret.append(age.days);
+        ret.append(age.getDays());
         ret.append(" ");
         ret.append(TranslationFacility.tr("ls.player.age.days"));
         if (birthday) {
@@ -858,7 +858,7 @@ public class Player extends AbstractTable.Storable {
         while (!economyDate.isBefore(to)) economyDate = economyDate.plusDaysAtSameLocalTime(-7);
         var sum = new AmountOfMoney(0);
         while (economyDate.isAfter(from)) {
-            var wageAtDate = getWageAtAge(this.getAgeAtDate(economyDate).seasons);
+            var wageAtDate = getWageAtAge(this.getAgeAtDate(economyDate).getSeasons());
             if (wageAtDate != null) {
                 sum.add( wageAtDate);
             }
