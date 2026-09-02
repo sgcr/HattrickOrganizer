@@ -10,6 +10,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class HODateTime implements Comparable<HODateTime> {
@@ -421,24 +422,12 @@ public class HODateTime implements Comparable<HODateTime> {
 
         private static final int DAYS_PER_SEASON = 7 * 16;
 
-        private int seasons;
-        private int days;
+        private final int seasons;
+        private final int days;
 
         public HODuration(int seasons, int days) {
-            this.seasons = seasons;
-            this.days = days;
-            normalize();
-        }
-
-        private void normalize() {
-            while (days > DAYS_PER_SEASON) {
-                days -= DAYS_PER_SEASON;
-                seasons++;
-            }
-            while (days < 0) {
-                days += DAYS_PER_SEASON;
-                seasons--;
-            }
+            this.seasons = seasons + Math.floorDiv(days, DAYS_PER_SEASON);
+            this.days = Math.floorMod(days, DAYS_PER_SEASON);
         }
 
         public int getSeasons() {
@@ -470,7 +459,24 @@ public class HODateTime implements Comparable<HODateTime> {
         }
 
         @Override
-        public int compareTo(@NotNull HODateTime.HODuration o) {
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            HODuration that = (HODuration) o;
+            return seasons == that.seasons && days == that.days;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(seasons, days);
+        }
+
+        @Override
+        public int compareTo(@NotNull HODuration o) {
             int result = Integer.compare(this.seasons, o.seasons);
             if (result == 0) {
                 result = Integer.compare(this.days, o.days);
