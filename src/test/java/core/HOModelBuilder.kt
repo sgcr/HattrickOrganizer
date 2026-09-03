@@ -73,8 +73,8 @@ class PlayerBuilder {
         ret.hrfId = hrfId
         val hrfDate = hrfs[hrfId]?.datum
         val age = HODuration.between(this.birthday, hrfDate)
-        ret.age = age.seasons
-        ret.ageDays = age.days
+        ret.age = age.seasons.toInt()
+        ret.ageDays = age.days.toInt()
         ret.injuryWeeks = injuryLevel
         ret.tsi = tsi
         ret.playerId = playerId
@@ -185,12 +185,12 @@ class TestPersistenceManager : PersistenceManager {
         var injuryLevel = 0
         ret.forEach { p ->
             run {
-                val age = HODuration(p.age, p.ageDays).plus(downloadTimeInterval)
+                val age = HODuration(p.age.toLong(), p.ageDays.toLong()).plus(downloadTimeInterval)
                 p.injuryWeeks = injuryLevel++
                 p.tsi = (p.tsi * (1.0 - 0.19 * p.injuryWeeks)).toInt()
                 p.hrfId = 43
-                p.age = age.seasons
-                p.ageDays = age.days
+                p.age = age.seasons.toInt()
+                p.ageDays = age.days.toInt()
             }
         }
         return ret

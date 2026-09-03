@@ -13,7 +13,7 @@ import static org.junit.jupiter.params.provider.Arguments.of;
 
 class HODurationTest {
 
-    private static final int DAYS_PER_SEASON = 7 * 16;
+    private static final long DAYS_PER_SEASON = 7L * 16L;
 
     private static Stream<Arguments> differentDurations() {
         return Stream.of(
@@ -59,7 +59,7 @@ class HODurationTest {
 
     @ParameterizedTest
     @MethodSource
-    void ctor_seasonsAndDays(int seasons, int days, int expectedSeasons, int expectedDays) {
+    void ctor_seasonsAndDays(long seasons, long days, long expectedSeasons, long expectedDays) {
         final var hoDuration = new HODuration(seasons, days);
         assertThat(hoDuration.getSeasons()).isEqualTo(expectedSeasons);
         assertThat(hoDuration.getDays()).isEqualTo(expectedDays);

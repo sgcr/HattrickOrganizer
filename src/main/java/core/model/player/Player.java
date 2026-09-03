@@ -858,7 +858,7 @@ public class Player extends AbstractTable.Storable {
         while (!economyDate.isBefore(to)) economyDate = economyDate.plusDaysAtSameLocalTime(-7);
         var sum = new AmountOfMoney(0);
         while (economyDate.isAfter(from)) {
-            var wageAtDate = getWageAtAge(this.getAgeAtDate(economyDate).getSeasons());
+            var wageAtDate = getWageAtAge((int) this.getAgeAtDate(economyDate).getSeasons());
             if (wageAtDate != null) {
                 sum.add( wageAtDate);
             }

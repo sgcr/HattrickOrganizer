@@ -10,24 +10,24 @@ public class HODuration implements Comparable<HODuration> {
 
     private static final int DAYS_PER_SEASON = 7 * 16;
 
-    private final int seasons;
-    private final int days;
+    private final long seasons;
+    private final long days;
 
-    public HODuration(int seasons, int days) {
+    public HODuration(long seasons, long days) {
         this.seasons = seasons + Math.floorDiv(days, DAYS_PER_SEASON);
         this.days = Math.floorMod(days, DAYS_PER_SEASON);
     }
 
-    public int getSeasons() {
+    public long getSeasons() {
         return seasons;
     }
 
-    public int getDays() {
+    public long getDays() {
         return days;
     }
 
     public static HODuration between(HODateTime from, HODateTime to) {
-        return new HODuration(0, (int) Duration.between(from.instant, to.instant).plus(12, ChronoUnit.HOURS).toDays());
+        return new HODuration(0, Duration.between(from.instant, to.instant).plus(12, ChronoUnit.HOURS).toDays());
     }
 
     public HODuration plus(HODuration diff) {
@@ -65,9 +65,9 @@ public class HODuration implements Comparable<HODuration> {
 
     @Override
     public int compareTo(@NotNull HODuration o) {
-        int result = Integer.compare(this.seasons, o.seasons);
+        int result = Long.compare(this.seasons, o.seasons);
         if (result == 0) {
-            result = Integer.compare(this.days, o.days);
+            result = Long.compare(this.days, o.days);
         }
         return result;
     }
