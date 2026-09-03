@@ -604,13 +604,13 @@ public class Player extends AbstractTable.Storable {
      * @return String
      */
     public static String getAgeWithDaysAsString(int ageYears, int ageDays, HODateTime time, HODateTime hrfTime) {
-        var age = new HODateTime.HODuration(ageYears, ageDays).plus(HODateTime.HODuration.between(hrfTime, time));
+        var age = new HODuration(ageYears, ageDays).plus(HODuration.between(hrfTime, time));
         return age.getSeasons() + " (" + age.getDays() + ")";
     }
 
-    public HODateTime.HODuration getAgeAtDate(HODateTime date) {
+    public HODuration getAgeAtDate(HODateTime date) {
         if (this.hrfDate != null)
-            return new HODateTime.HODuration(this.getAge(), this.getAgeDays()).plus(HODateTime.HODuration.between(this.hrfDate, date));
+            return new HODuration(this.getAge(), this.getAgeDays()).plus(HODuration.between(this.hrfDate, date));
         return null;
     }
 
@@ -622,8 +622,8 @@ public class Player extends AbstractTable.Storable {
      */
     public String getAgeStringFull() {
         var hrfTime = HOVerwaltung.instance().getModel().getBasics().getDatum();
-        var oldAge = new HODateTime.HODuration(this.getAge(), this.getAgeDays());
-        var age = oldAge.plus(HODateTime.HODuration.between(hrfTime, HODateTime.now()));
+        var oldAge = new HODuration(this.getAge(), this.getAgeDays());
+        var age = oldAge.plus(HODuration.between(hrfTime, HODateTime.now()));
         var birthday = oldAge.getSeasons() != age.getSeasons();
         StringBuilder ret = new StringBuilder();
         ret.append(age.getSeasons());
@@ -2430,7 +2430,7 @@ public class Player extends AbstractTable.Storable {
 
             if ( previousPlayer != null){
                 double experienceIncrement = this.getSkill(EXPERIENCE) - previousPlayer.getSkill(EXPERIENCE);
-                HODateTime.HODuration duration = HODateTime.HODuration.between(previousPlayer.getHrfDate(), this.getHrfDate());
+                HODuration duration = HODuration.between(previousPlayer.getHrfDate(), this.getHrfDate());
                 experienceIncrementPerWeek = experienceIncrement / duration.toDouble() / 16;
             }
             else {
