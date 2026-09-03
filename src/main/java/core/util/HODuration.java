@@ -8,22 +8,42 @@ import java.util.Objects;
 
 public class HODuration implements Comparable<HODuration> {
 
-    private static final int DAYS_PER_SEASON = 7 * 16;
+    private static final long DAYS_PER_WEEK = 7;
+    private static final long WEEKS_PER_SEASON = 16;
+    private static final long DAYS_PER_SEASON = DAYS_PER_WEEK * WEEKS_PER_SEASON;
 
-    private final long seasons;
-    private final long days;
+    private static final long SECONDS_PER_MINUTE = 60L;
+    private static final long MINUTES_PER_HOUR = 60L;
+    private static final long SECONDS_PER_HOUR = MINUTES_PER_HOUR * SECONDS_PER_MINUTE;
+    private static final long HOURS_PER_DAY = 24L;
+    private static final long SECONDS_PER_DAY = HOURS_PER_DAY * SECONDS_PER_HOUR;
+    private static final long SECONDS_PER_WEEK = DAYS_PER_WEEK * SECONDS_PER_DAY;
+    private static final long SECONDS_PER_SEASON = WEEKS_PER_SEASON * SECONDS_PER_WEEK;
+
+    private final long totalSeconds;
 
     public HODuration(long seasons, long days) {
-        this.seasons = seasons + Math.floorDiv(days, DAYS_PER_SEASON);
-        this.days = Math.floorMod(days, DAYS_PER_SEASON);
+        this.totalSeconds = seasons * SECONDS_PER_SEASON + SECONDS_PER_DAY * days;
+    }
+
+    private HODuration(long totalSeconds) {
+        this.totalSeconds = totalSeconds;
+    }
+
+    public static HODuration fromSeconds(long totalSeconds) {
+        return new HODuration(totalSeconds);
+    }
+
+    public long getTotalSeconds() {
+        return totalSeconds;
     }
 
     public long getSeasons() {
-        return seasons;
+        return Math.floorDiv(totalSeconds, SECONDS_PER_SEASON);
     }
 
     public long getDays() {
-        return days;
+        return Math.floorMod(totalSeconds, SECONDS_PER_SEASON) / SECONDS_PER_DAY;
     }
 
     public static HODuration between(HODateTime from, HODateTime to) {
@@ -31,19 +51,21 @@ public class HODuration implements Comparable<HODuration> {
     }
 
     public HODuration plus(HODuration diff) {
-        return new HODuration(seasons + diff.seasons, days + diff.days);
+        return fromSeconds(totalSeconds + diff.totalSeconds);
     }
 
     public HODuration minus(HODuration diff) {
-        return new HODuration(seasons - diff.seasons, days - diff.days);
+        return fromSeconds(totalSeconds - diff.totalSeconds);
     }
 
+    @Override
     public String toString() {
-        return seasons + " (" + days + ")";
+        return getSeasons() + " (" + getDays() + ")";
     }
 
     public double toDouble() {
-        return seasons + days / (double) DAYS_PER_SEASON;
+        return totalSeconds / (double) SECONDS_PER_SEASON;
+//        return getSeasons() + getDays() / (double) DAYS_PER_SEASON;
     }
 
     @Override
@@ -55,20 +77,16 @@ public class HODuration implements Comparable<HODuration> {
             return false;
         }
         HODuration that = (HODuration) o;
-        return seasons == that.seasons && days == that.days;
+        return totalSeconds == that.totalSeconds;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seasons, days);
+        return Objects.hash(totalSeconds);
     }
 
     @Override
     public int compareTo(@NotNull HODuration o) {
-        int result = Long.compare(this.seasons, o.seasons);
-        if (result == 0) {
-            result = Long.compare(this.days, o.days);
-        }
-        return result;
+        return Long.compare(this.totalSeconds, o.totalSeconds);
     }
 }
