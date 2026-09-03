@@ -144,6 +144,27 @@ class HODurationTest {
         assertThat(hoDuration).hasToString(expected);
     }
 
+    private static Stream<Arguments> toDouble() {
+        return Stream.of(
+            of(new HODuration(0, 0), 0.0),
+            of(new HODuration(1, 0), 1.0),
+            of(new HODuration(0, 56), 0.5),
+            of(new HODuration(1, 56), 1.5),
+            of(new HODuration(0, 112), 1.0),
+            of(new HODuration(0, 168), 1.5),
+            of(new HODuration(-1, 0), -1.0),
+            of(new HODuration(0, -56), -0.5),
+            of(new HODuration(0, -112), -1.0),
+            of(new HODuration(-1, 56), -0.5)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void toDouble(HODuration hoDuration, double expected) {
+        assertThat(hoDuration.toDouble()).isEqualTo(expected);
+    }
+
     @ParameterizedTest
     @MethodSource("equalDurations")
     void shouldBeEqual(HODuration duration1, HODuration duration2) {
