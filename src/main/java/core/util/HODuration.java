@@ -46,6 +46,18 @@ public class HODuration implements Comparable<HODuration> {
         return Math.floorMod(totalSeconds, SECONDS_PER_SEASON) / SECONDS_PER_DAY;
     }
 
+    public long getHours() {
+        return Math.floorMod(totalSeconds, SECONDS_PER_DAY) / SECONDS_PER_HOUR;
+    }
+
+    public long getMinutes() {
+        return Math.floorMod(totalSeconds, SECONDS_PER_HOUR) / SECONDS_PER_MINUTE;
+    }
+
+    public long getSeconds() {
+        return Math.floorMod(totalSeconds, SECONDS_PER_MINUTE);
+    }
+
     public static HODuration between(HODateTime from, HODateTime to) {
         return new HODuration(0, Duration.between(from.instant, to.instant).plus(12, ChronoUnit.HOURS).toDays());
     }
