@@ -1,7 +1,6 @@
 package core.util;
 
 import core.model.TranslationFacility;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,10 +8,9 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.ToLongFunction;
 
-public class HODuration implements Comparable<HODuration> {
+public final class HODuration implements Comparable<HODuration> {
 
     private static final long DAYS_PER_WEEK = 7;
     private static final long WEEKS_PER_SEASON = 16;
@@ -107,7 +105,7 @@ public class HODuration implements Comparable<HODuration> {
     }
 
     public long getTotalWeeks() {
-        return getSeasons() * WEEKS_PER_SEASON + getWeeks();
+        return Math.floorDiv(totalSeconds, SECONDS_PER_WEEK);
     }
 
     public static HODuration between(HODateTime from, HODateTime to) {
@@ -149,7 +147,7 @@ public class HODuration implements Comparable<HODuration> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(totalSeconds);
+        return Long.hashCode(totalSeconds);
     }
 
     @Override
@@ -171,15 +169,13 @@ public class HODuration implements Comparable<HODuration> {
 
     @RequiredArgsConstructor
     private enum Unit {
-        SEASONS(SECONDS_PER_SEASON, "Duration.seasons.singular", "Duration.seasons.plural", HODuration::getSeasons),
-        WEEKS(SECONDS_PER_WEEK, "Duration.weeks.singular", "Duration.weeks.plural", HODuration::getWeeks),
-        DAYS(SECONDS_PER_DAY, "Duration.days.singular", "Duration.days.plural", HODuration::getDays),
-        HOURS(SECONDS_PER_HOUR, "Duration.hours.singular", "Duration.hours.plural", HODuration::getHours),
-        MINUTES(SECONDS_PER_MINUTE, "Duration.minutes.singular", "Duration.minutes.plural", HODuration::getMinutes),
-        SECONDS(1, "Duration.seconds.singular", "Duration.seconds.plural", HODuration::getSeconds);
+        SEASONS("Duration.seasons.singular", "Duration.seasons.plural", HODuration::getSeasons),
+        WEEKS("Duration.weeks.singular", "Duration.weeks.plural", HODuration::getWeeks),
+        DAYS("Duration.days.singular", "Duration.days.plural", HODuration::getDays),
+        HOURS("Duration.hours.singular", "Duration.hours.plural", HODuration::getHours),
+        MINUTES("Duration.minutes.singular", "Duration.minutes.plural", HODuration::getMinutes),
+        SECONDS("Duration.seconds.singular", "Duration.seconds.plural", HODuration::getSeconds);
 
-        @Getter
-        private final long secondsPerUnit;
         private final String translationKeySingular;
         private final String translationKeyPlural;
         private final ToLongFunction<HODuration> getter;
@@ -189,7 +185,7 @@ public class HODuration implements Comparable<HODuration> {
         }
 
         public String getUnitAsString(long value) {
-            return translateUnitSingularOrPlural(value == 1L);
+            return translateUnitSingularOrPlural(Math.abs(value) == 1L);
         }
 
         private String translateUnitSingularOrPlural(boolean singular) {

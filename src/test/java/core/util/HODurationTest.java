@@ -379,7 +379,7 @@ class HODurationTest {
         assertThat(lhs.compareTo(rhs)).isEqualTo(expected);
     }
 
-    private static Stream<Arguments> humanDurationToString() {
+    private static Stream<Arguments> toHumanString() {
         return Stream.of(
             of(HODuration.of(0, 0, 0, 2, 3, 4), "2 hours, 3 minutes, 4 seconds"),
             of(HODuration.of(0, 0, 1, 0, 3, 4), "1 day, 3 minutes, 4 seconds"),
@@ -388,12 +388,13 @@ class HODurationTest {
             of(HODuration.of(0, 0, 1, 2, 3, 4), "1 day, 2 hours, 3 minutes, 4 seconds"),
             of(HODuration.of(0, 1, 2, 3, 4, 5), "1 week, 2 days, 3 hours, 4 minutes, 5 seconds"),
             of(HODuration.of(1, 2, 3, 4, 5, 6), "1 season, 2 weeks, 3 days, 4 hours, 5 minutes, 6 seconds"),
+            of(HODuration.fromSeconds(-1), "-1 season, 15 weeks, 6 days, 23 hours, 59 minutes, 59 seconds"),
             of(new HODuration(), EMPTY)
         );
     }
 
     @ParameterizedTest
-    @MethodSource("humanDurationToString")
+    @MethodSource
     void toHumanString(HODuration hoDuration, String expected) {
         // given
         TranslationFacility.setTranslator(Translator.load(Translator.LANGUAGE_DEFAULT));
