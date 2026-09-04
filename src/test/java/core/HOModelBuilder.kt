@@ -74,7 +74,7 @@ class PlayerBuilder {
         val hrfDate = hrfs[hrfId]?.datum
         val age = HODuration.between(this.birthday, hrfDate)
         ret.age = age.seasons.toInt()
-        ret.ageDays = age.days.toInt()
+        ret.ageDays = age.daysInSeason.toInt()
         ret.injuryWeeks = injuryLevel
         ret.tsi = tsi
         ret.playerId = playerId
@@ -190,7 +190,7 @@ class TestPersistenceManager : PersistenceManager {
                 p.tsi = (p.tsi * (1.0 - 0.19 * p.injuryWeeks)).toInt()
                 p.hrfId = 43
                 p.age = age.seasons.toInt()
-                p.ageDays = age.days.toInt()
+                p.ageDays = age.daysInSeason.toInt()
             }
         }
         return ret

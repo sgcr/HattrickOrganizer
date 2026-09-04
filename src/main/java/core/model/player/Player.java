@@ -605,7 +605,7 @@ public class Player extends AbstractTable.Storable {
      */
     public static String getAgeWithDaysAsString(int ageYears, int ageDays, HODateTime time, HODateTime hrfTime) {
         var age = new HODuration(ageYears, ageDays).plus(HODuration.between(hrfTime, time));
-        return age.getSeasons() + " (" + age.getDays() + ")";
+        return age.getSeasons() + " (" + age.getDaysInSeason() + ")";
     }
 
     public HODuration getAgeAtDate(HODateTime date) {
@@ -630,7 +630,7 @@ public class Player extends AbstractTable.Storable {
         ret.append(" ");
         ret.append(TranslationFacility.tr("ls.player.age.years"));
         ret.append(" ");
-        ret.append(age.getDays());
+        ret.append(age.getDaysInSeason());
         ret.append(" ");
         ret.append(TranslationFacility.tr("ls.player.age.days"));
         if (birthday) {

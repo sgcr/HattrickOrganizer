@@ -1,5 +1,7 @@
 package core.util;
 
+import core.model.TranslationFacility;
+import core.model.Translator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -8,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.Instant;
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
@@ -23,6 +26,7 @@ class HODurationTest {
     private static final long HOURS_PER_DAY = 24L;
     private static final long SECONDS_PER_DAY = HOURS_PER_DAY * SECONDS_PER_HOUR;
     private static final long SECONDS_PER_SEASON = DAYS_PER_SEASON * SECONDS_PER_DAY;
+    private static final long SECONDS_PER_WEEK = DAYS_PER_WEEK * SECONDS_PER_DAY;
 
     private static Stream<Arguments> differentDurations() {
         return Stream.of(
@@ -45,6 +49,19 @@ class HODurationTest {
             of(new HODuration(0, -112), new HODuration(-1, 0)),
             of(new HODuration(0, -113), new HODuration(-2, 111))
         );
+    }
+
+    @Test
+    void defaultCtor() {
+        final var hoDuration = new HODuration();
+        assertThat(hoDuration.getTotalSeconds()).isEqualTo(0);
+        assertThat(hoDuration.getSeasons()).isEqualTo(0);
+        assertThat(hoDuration.getWeeks()).isEqualTo(0);
+        assertThat(hoDuration.getDays()).isEqualTo(0);
+        assertThat(hoDuration.getHours()).isEqualTo(0);
+        assertThat(hoDuration.getMinutes()).isEqualTo(0);
+        assertThat(hoDuration.getSeconds()).isEqualTo(0);
+        assertThat(hoDuration.getDaysInSeason()).isEqualTo(0);
     }
 
     private static Stream<Arguments> ctor_seasonsAndDays() {
@@ -71,7 +88,7 @@ class HODurationTest {
     void ctor_seasonsAndDays(long seasons, long days, long expectedSeasons, long expectedDays) {
         final var hoDuration = new HODuration(seasons, days);
         assertThat(hoDuration.getSeasons()).isEqualTo(expectedSeasons);
-        assertThat(hoDuration.getDays()).isEqualTo(expectedDays);
+        assertThat(hoDuration.getDaysInSeason()).isEqualTo(expectedDays);
     }
 
     private static Stream<Arguments> between() {
@@ -98,11 +115,13 @@ class HODurationTest {
             of(SECONDS_PER_MINUTE),
             of(SECONDS_PER_HOUR),
             of(SECONDS_PER_DAY),
+            of(SECONDS_PER_WEEK),
             of(SECONDS_PER_SEASON),
             of(SECONDS_PER_SEASON + 1),
             of(-1L),
             of(-SECONDS_PER_MINUTE),
             of(-SECONDS_PER_DAY),
+            of(-SECONDS_PER_WEEK),
             of(-SECONDS_PER_SEASON),
             of(Long.MAX_VALUE),
             of(Long.MIN_VALUE)
@@ -118,58 +137,40 @@ class HODurationTest {
 
     private static Stream<Arguments> durationParts() {
         return Stream.of(
-            // zero
-            of(0L, 0, 0, 0, 0, 0),
+            of(0L, 0, 0, 0, 0, 0, 0),
 
-            // seconds
-            of(1L, 0, 0, 0, 0, 1),
-            of(SECONDS_PER_MINUTE - 1, 0, 0, 0, 0, 59),
+            of(1L, 0, 0, 0, 0, 0, 1),
+            of(SECONDS_PER_MINUTE, 0, 0, 0, 0, 1, 0),
+            of(SECONDS_PER_HOUR, 0, 0, 0, 1, 0, 0),
+            of(SECONDS_PER_DAY, 0, 0, 1, 0, 0, 0),
+            of(SECONDS_PER_WEEK, 0, 1, 0, 0, 0, 0),
 
-            // minutes
-            of(SECONDS_PER_MINUTE, 0, 0, 0, 1, 0),
-            of(SECONDS_PER_MINUTE + 1, 0, 0, 0, 1, 1),
-
-            // hours
-            of(SECONDS_PER_HOUR, 0, 0, 1, 0, 0),
             of(
-                2 * SECONDS_PER_HOUR + 3 * SECONDS_PER_MINUTE + 4,
-                0, 0, 2, 3, 4
+                2 * SECONDS_PER_WEEK
+                    + 3 * SECONDS_PER_DAY
+                    + 4 * SECONDS_PER_HOUR
+                    + 5 * SECONDS_PER_MINUTE
+                    + 6,
+                0, 2, 3, 4, 5, 6
             ),
 
-            // days
-            of(SECONDS_PER_DAY, 0, 1, 0, 0, 0),
-            of(
-                10 * SECONDS_PER_DAY + 2 * SECONDS_PER_HOUR + 3 * SECONDS_PER_MINUTE + 4,
-                0, 10, 2, 3, 4
-            ),
+            of(SECONDS_PER_SEASON - 1, 0, 15, 6, 23, 59, 59),
+            of(SECONDS_PER_SEASON, 1, 0, 0, 0, 0, 0),
+            of(SECONDS_PER_SEASON + 1, 1, 0, 0, 0, 0, 1),
 
-            // season boundary
-            of(SECONDS_PER_SEASON - 1, 0, 111, 23, 59, 59),
-            of(SECONDS_PER_SEASON, 1, 0, 0, 0, 0),
-            of(SECONDS_PER_SEASON + 1, 1, 0, 0, 0, 1),
-
-            // seasons with remaining days and time
             of(
                 2 * SECONDS_PER_SEASON
-                    + 10 * SECONDS_PER_DAY
-                    + 2 * SECONDS_PER_HOUR
-                    + 3 * SECONDS_PER_MINUTE
-                    + 4,
-                2, 10, 2, 3, 4
+                    + 3 * SECONDS_PER_WEEK
+                    + 4 * SECONDS_PER_DAY
+                    + 5 * SECONDS_PER_HOUR
+                    + 6 * SECONDS_PER_MINUTE
+                    + 7,
+                2, 3, 4, 5, 6, 7
             ),
 
-            // negative values
-            of(-1L, -1, 111, 23, 59, 59),
-            of(-SECONDS_PER_MINUTE, -1, 111, 23, 59, 0),
-            of(-SECONDS_PER_HOUR, -1, 111, 23, 0, 0),
-            of(-SECONDS_PER_DAY, -1, 111, 0, 0, 0),
-            of(-SECONDS_PER_SEASON, -1, 0, 0, 0, 0),
-
-            // negative season with remainder
-            of(
-                -SECONDS_PER_SEASON - SECONDS_PER_DAY - SECONDS_PER_HOUR,
-                -2, 110, 23, 0, 0
-            )
+            of(-1L, -1, 15, 6, 23, 59, 59),
+            of(-SECONDS_PER_WEEK, -1, 15, 0, 0, 0, 0),
+            of(-SECONDS_PER_SEASON, -1, 0, 0, 0, 0, 0)
         );
     }
 
@@ -178,6 +179,7 @@ class HODurationTest {
     void durationParts(
         long totalSeconds,
         long expectedSeasons,
+        long expectedWeeks,
         long expectedDays,
         long expectedHours,
         long expectedMinutes,
@@ -186,10 +188,60 @@ class HODurationTest {
         final var hoDuration = HODuration.fromSeconds(totalSeconds);
 
         assertThat(hoDuration.getSeasons()).isEqualTo(expectedSeasons);
+        assertThat(hoDuration.getWeeks()).isEqualTo(expectedWeeks);
         assertThat(hoDuration.getDays()).isEqualTo(expectedDays);
         assertThat(hoDuration.getHours()).isEqualTo(expectedHours);
         assertThat(hoDuration.getMinutes()).isEqualTo(expectedMinutes);
         assertThat(hoDuration.getSeconds()).isEqualTo(expectedSeconds);
+    }
+
+    private static Stream<Arguments> getDaysInSeason() {
+        return Stream.of(
+            of(HODuration.fromSeconds(0), 0),
+            of(new HODuration(0, 1), 1),
+            of(new HODuration(0, 7), 7),
+            of(new HODuration(0, 111), 111),
+            of(new HODuration(0, 112), 0),
+            of(new HODuration(0, 113), 1),
+
+            of(new HODuration(1, 0), 0),
+            of(new HODuration(1, 10), 10),
+            of(new HODuration(2, 111), 111),
+
+            of(new HODuration(0, -1), 111),
+            of(new HODuration(0, -112), 0),
+            of(new HODuration(0, -113), 111),
+            of(new HODuration(-1, 10), 10)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void getDaysInSeason(HODuration hoDuration, long expectedDaysInSeason) {
+        assertThat(hoDuration.getDaysInSeason()).isEqualTo(expectedDaysInSeason);
+    }
+
+    private static Stream<Arguments> getTotalWeeks() {
+        return Stream.of(
+            of(HODuration.fromSeconds(0), 0),
+            of(HODuration.of(0, 0, 6, 23, 59, 59), 0),
+            of(HODuration.of(0, 1, 0, 0, 0, 0), 1),
+            of(HODuration.of(0, 15, 0, 0, 0, 0), 15),
+            of(HODuration.of(1, 0, 0, 0, 0, 0), 16),
+            of(HODuration.of(1, 1, 0, 0, 0, 0), 17),
+            of(HODuration.of(2, 3, 4, 0, 0, 0), 35),
+
+            of(HODuration.of(0, 0, -1, 0, 0, 0), -1),
+            of(HODuration.of(0, -1, 0, 0, 0, 0), -1),
+            of(HODuration.of(-1, 0, 0, 0, 0, 0), -16),
+            of(HODuration.of(-1, -1, 0, 0, 0, 0), -17)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void getTotalWeeks(HODuration hoDuration, long expectedTotalWeeks) {
+        assertThat(hoDuration.getTotalWeeks()).isEqualTo(expectedTotalWeeks);
     }
 
     @ParameterizedTest
@@ -238,7 +290,7 @@ class HODurationTest {
         assertThat(lhs.minus(rhs)).isEqualTo(expected);
     }
 
-    private static Stream<Arguments> testToString() {
+    private static Stream<Arguments> testToAgeStringAndToString() {
         return Stream.of(
             of(new HODuration(1, 2), "1 (2)"),
             of(new HODuration(1, -1), "0 (111)"),
@@ -250,8 +302,11 @@ class HODurationTest {
 
     @ParameterizedTest
     @MethodSource
-    void testToString(HODuration hoDuration, String expected) {
-        assertThat(hoDuration).hasToString(expected);
+    void testToAgeStringAndToString(HODuration hoDuration, String expected) {
+        final var ageString = hoDuration.toAgeString();
+        final var toString = hoDuration.toString();
+        assertThat(ageString).isEqualTo(expected);
+        assertThat(toString).isEqualTo(ageString);
     }
 
     private static Stream<Arguments> toDouble() {
@@ -322,5 +377,31 @@ class HODurationTest {
     @MethodSource
     void compareTo(HODuration lhs, HODuration rhs, int expected) {
         assertThat(lhs.compareTo(rhs)).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> humanDurationToString() {
+        return Stream.of(
+            of(HODuration.of(0, 0, 0, 2, 3, 4), "2 hours, 3 minutes, 4 seconds"),
+            of(HODuration.of(0, 0, 1, 0, 3, 4), "1 day, 3 minutes, 4 seconds"),
+            of(HODuration.of(0, 0, 1, 2, 0, 4), "1 day, 2 hours, 4 seconds"),
+            of(HODuration.of(0, 0, 1, 2, 3, 0), "1 day, 2 hours, 3 minutes"),
+            of(HODuration.of(0, 0, 1, 2, 3, 4), "1 day, 2 hours, 3 minutes, 4 seconds"),
+            of(HODuration.of(0, 1, 2, 3, 4, 5), "1 week, 2 days, 3 hours, 4 minutes, 5 seconds"),
+            of(HODuration.of(1, 2, 3, 4, 5, 6), "1 season, 2 weeks, 3 days, 4 hours, 5 minutes, 6 seconds"),
+            of(new HODuration(), EMPTY)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("humanDurationToString")
+    void toHumanString(HODuration hoDuration, String expected) {
+        // given
+        TranslationFacility.setTranslator(Translator.load(Translator.LANGUAGE_DEFAULT));
+
+        // when
+        final var result = hoDuration.toHumanString();
+
+        // then
+        assertThat(result).isEqualTo(expected);
     }
 }
