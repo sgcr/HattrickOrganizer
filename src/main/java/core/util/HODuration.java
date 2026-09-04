@@ -31,6 +31,19 @@ public final class HODuration implements Comparable<HODuration> {
         this.totalSeconds = 0;
     }
 
+    /**
+     * Constructor to create a duration with the given number of {@code seasons} and {@code days}.
+     *
+     * @param seasons number of seasons
+     * @param days number of days
+     *
+     * @deprecated Provided for compatibility. Please use {@link HODuration(long seasons, long days)} instead.
+     */
+    @Deprecated(since = "10.0")
+    public HODuration(int seasons, int days) {
+        this((long) seasons, (long) days);
+    }
+
     public HODuration(long seasons, long days) {
         this.totalSeconds = seasons * SECONDS_PER_SEASON + SECONDS_PER_DAY * days;
     }
