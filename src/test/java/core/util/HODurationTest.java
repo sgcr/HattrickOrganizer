@@ -82,6 +82,31 @@ class HODurationTest {
         );
     }
 
+    private static Stream<Arguments> fromSeconds() {
+        return Stream.of(
+            of(0L),
+            of(1L),
+            of(60L),
+            of(60L * 60),
+            of(24L * 60 * 60),
+            of(112L * 24 * 60 * 60),
+            of(112L * 24 * 60 * 60 + 1),
+            of(-1L),
+            of(-60L),
+            of(-24L * 60 * 60),
+            of(-112L * 24 * 60 * 60),
+            of(Long.MAX_VALUE),
+            of(Long.MIN_VALUE)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void fromSeconds(long totalSeconds) {
+        final var hoDuration = HODuration.fromSeconds(totalSeconds);
+        assertThat(hoDuration.getTotalSeconds()).isEqualTo(totalSeconds);
+    }
+
     @ParameterizedTest
     @MethodSource
     void between(String from, String to, HODuration expected) {
