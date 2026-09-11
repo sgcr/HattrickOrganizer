@@ -38,10 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
-import static core.gui.theme.HOIconName.GOTOANALYSEBOTTOM;
-import static core.gui.theme.HOIconName.GOTOANALYSETOP;
-import static core.gui.theme.HOIconName.GOTOSTATISTIK;
-import static core.gui.theme.HOIconName.SMILEYS;
+import static core.gui.theme.HOIconName.*;
 import static core.gui.theme.ImageUtilities.getSvgIcon;
 import static core.model.player.IMatchRoleID.UNKNOWN;
 import static core.model.player.IMatchRoleID.UNSELECTABLE;
@@ -301,9 +298,9 @@ public final class PlayerDetailsPanel extends ImagePanel implements Refreshable,
         }
         m_jlSpecialty.setIcon(ImageUtilities.getSmallPlayerSpecialtyIcon(HOIconName.SPECIALTIES[iSpecialty]));
 
-        String playerDescription = "<html>" + Helper.getTranslation("ls.player_details.desc1", PlayerAgreeability.toString(m_clPlayer.getGentleness()), PlayerAggressiveness.toString(m_clPlayer.getAggressivity()), PlayerHonesty.toString(m_clPlayer.getHonesty()));
+        String playerDescription = "<html>" + TranslationFacility.tr("ls.player_details.desc1", PlayerAgreeability.toString(m_clPlayer.getGentleness()), PlayerAggressiveness.toString(m_clPlayer.getAggressivity()), PlayerHonesty.toString(m_clPlayer.getHonesty()));
         playerDescription += "<br>";
-        playerDescription += Helper.getTranslation("ls.player_details.desc2", PlayerAbility.getNameForSkill(m_clPlayer.getExperience(), true, false, 0), PlayerAbility.getNameForSkill(m_clPlayer.getLeadership(), true, false, 0), PlayerAbility.getNameForSkill(m_clPlayer.getLoyalty(), true, false, 0));
+        playerDescription += TranslationFacility.tr("ls.player_details.desc2", PlayerAbility.getNameForSkill(m_clPlayer.getExperience(), true, false, 0), PlayerAbility.getNameForSkill(m_clPlayer.getLeadership(), true, false, 0), PlayerAbility.getNameForSkill(m_clPlayer.getLoyalty(), true, false, 0));
         playerDescription += "</html>";
         m_jlPlayerDescription.setText(playerDescription);
 
@@ -313,7 +310,7 @@ public final class PlayerDetailsPanel extends ImagePanel implements Refreshable,
         var arrival = m_clPlayer.getArrivalDate();
         if ( arrival != null ) {
             String arrivalDate = arrival.toLocaleDateTime();
-            m_jlInTeamSince.setText(Helper.getTranslation("ImTeamSeit") + " " + arrivalDate);
+            m_jlInTeamSince.setText(TranslationFacility.tr("ImTeamSeit") + " " + arrivalDate);
         }
         else {
             m_jlInTeamSince.setText("");
@@ -652,7 +649,7 @@ public final class PlayerDetailsPanel extends ImagePanel implements Refreshable,
 
         jpPlayerGoalsStats.setLayout(layoutPlayerGoalsStatsPanel);
 
-        String title = "⚽ " + Helper.getTranslation("ls.module.player_analysis.stats");
+        String title = "⚽ " + TranslationFacility.tr("ls.module.player_analysis.stats");
         TitledBorder titledBorder = BorderFactory.createTitledBorder(title.toUpperCase());
         titledBorder.setTitleFont(new Font(Font.DIALOG, Font.PLAIN, 18));
         titledBorder.setTitleColor(ThemeManager.getColor(HOColorName.LINEUP_HIGHLIGHT_FG));
@@ -736,7 +733,7 @@ public final class PlayerDetailsPanel extends ImagePanel implements Refreshable,
         jpPlayerGoalsStats.add(m_jlAssistsCurrentTeam);
 
 
-        label = new JLabel(Helper.getTranslation("ls.module.player_analysis.goals_stats_disclaimer"));
+        label = new JLabel(TranslationFacility.tr("ls.module.player_analysis.goals_stats_disclaimer"));
         Font newLabelFont = new Font(label.getFont().getName(), Font.ITALIC, label.getFont().getSize());
         label.setFont(newLabelFont);
 
@@ -986,7 +983,7 @@ public final class PlayerDetailsPanel extends ImagePanel implements Refreshable,
     }
 
     private JLabel createLabel(String i18nText){
-        JLabel _label = new JLabel(Helper.getTranslation(i18nText), SwingConstants.RIGHT);
+        JLabel _label = new JLabel(TranslationFacility.tr(i18nText), SwingConstants.RIGHT);
         _label.setFont(Helper.getLabelFontAsBold(_label));
         return _label;
     }
@@ -1098,7 +1095,7 @@ public final class PlayerDetailsPanel extends ImagePanel implements Refreshable,
                     }
                 });
 
-                label.setToolTipText(Helper.getTranslation("ls.module.player_analysis.match_label_tooltip"));
+                label.setToolTipText(TranslationFacility.tr("ls.module.player_analysis.match_label_tooltip"));
                 layout.setConstraints(label, constraints);
                 add(label);
                 lMatchLabel.add(label);
