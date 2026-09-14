@@ -238,7 +238,9 @@ public class SpecialEventsPredictionManager {
                     int role = playerPerformance.getMatchLineupPosition().getPosition();
                     player = oppPlayerSkillEstimator.calcPlayer(age, wage, tsi, form, stamina, spec, role, -1);
                     player.setPlayerId(playerPerformance.getSpielerId());
+                    player.setFirstName(playerPerformance.getSpielerVName());
                     player.setLastName(playerPerformance.getSpielerName());
+                    player.setNickName(playerPerformance.getNickName());
                     player.setHomeGrown(latestPlayerInfo.isMotherClubBonus());
                     player.setLoyalty(latestPlayerInfo.getLoyalty());
                     player.setExperience(latestPlayerInfo.getExperience());
