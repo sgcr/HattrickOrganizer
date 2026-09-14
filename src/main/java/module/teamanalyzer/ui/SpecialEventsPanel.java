@@ -6,6 +6,7 @@ import core.model.player.IMatchRoleID;
 import core.model.player.Player;
 import core.specialevents.SpecialEventsPrediction;
 import core.specialevents.SpecialEventsPredictionManager;
+import core.util.HOLogger;
 import module.teamanalyzer.vo.TeamLineup;
 import javax.swing.*;
 import java.awt.*;
@@ -141,6 +142,7 @@ public class SpecialEventsPanel extends JPanel {
         rowData.add(kind);
         rowData.add(player!=null?player.getFullName():"");
         rowData.add(opponentPlayer!=null?opponentPlayer.getFullName():"");
+        HOLogger.instance().info(SpecialEventsPanel.class, "opponentPlayer: %s".formatted(Optional.ofNullable(opponentPlayer).map(Player::getFullName).orElse("")));
         rowData.add(involvedPlayerNames);
 
         DecimalFormat df = new DecimalFormat("#.00");
