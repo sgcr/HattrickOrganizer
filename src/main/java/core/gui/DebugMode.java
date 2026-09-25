@@ -6,7 +6,7 @@ import core.net.Connector;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 
-public class DebugMode {
+public final class DebugMode {
 
 	private DebugMode() {
 		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
@@ -17,6 +17,7 @@ public class DebugMode {
 		menu.add(getSQLDialogMenuItem());
 		menu.add(getLookAndFeelDialogMenuItem());
 		menu.add(getSaveXMLMenuItem());
+        menu.add(getCompareBaseTranslationWithGerman());
 		return menu;
 	}
 
@@ -37,4 +38,13 @@ public class DebugMode {
 		newItem.addItemListener(e -> Connector.setDebugSave(e.getStateChange() == ItemEvent.SELECTED));
 		return newItem;
 	}
+
+    private static JMenuItem getCompareBaseTranslationWithGerman() {
+        JMenuItem menuItem = new JMenuItem("Compare base translation with German");
+        menuItem.addActionListener(actionEvent -> {
+            CompareTranslations compareTranslations = new CompareTranslations();
+            compareTranslations.compare();
+        });
+        return menuItem;
+    }
 }
