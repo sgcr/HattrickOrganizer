@@ -17,6 +17,7 @@ public final class DebugMode {
 		menu.add(createSqlDialogMenuItem());
 		menu.add(createLookAndFeelDialogMenuItem());
 		menu.add(createSaveDownloadedXmlMenuItem());
+        menu.add(getCompareBaseTranslationWithGerman());
 		return menu;
 	}
 
@@ -37,4 +38,13 @@ public final class DebugMode {
 		newItem.addItemListener(e -> Connector.setSaveDownloadedXml(e.getStateChange() == ItemEvent.SELECTED));
 		return newItem;
 	}
+
+    private static JMenuItem getCompareBaseTranslationWithGerman() {
+        JMenuItem menuItem = new JMenuItem("Compare base translation with German");
+        menuItem.addActionListener(actionEvent -> {
+            CompareTranslations compareTranslations = new CompareTranslations();
+            compareTranslations.compare();
+        });
+        return menuItem;
+    }
 }
