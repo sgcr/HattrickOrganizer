@@ -126,8 +126,6 @@ public class XMLMatchdetailsParser {
         //final Vector<Integer> broken = new Vector<>(); // TODO: I guess this one can be deleted if things are done properly (akasolace)
         Element root, ele;
         NodeList eventList;
-		int iMinute, iSubjectPlayerID, iSubjectTeamID, iObjectPlayerID, iMatchEventID, iMatchPart, iEventVariation;
-		String eventtext;
 
 		try {
             //get Root element
@@ -145,14 +143,14 @@ public class XMLMatchdetailsParser {
             	root = (Element) eventList.item(n);
 
             	//get values from xml
-            	iMinute = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("Minute").item(0)));
-            	iSubjectPlayerID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("SubjectPlayerID").item(0)));
-            	iSubjectTeamID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("SubjectTeamID").item(0)));
-            	iObjectPlayerID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("ObjectPlayerID").item(0)));
-				iMatchPart = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("MatchPart").item(0)));
-				iEventVariation = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("EventVariation").item(0)));
+            	final int iMinute = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("Minute").item(0)));
+                final int iSubjectPlayerID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("SubjectPlayerID").item(0)));
+                final int iSubjectTeamID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("SubjectTeamID").item(0)));
+                final int iObjectPlayerID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("ObjectPlayerID").item(0)));
+                final int iMatchPart = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("MatchPart").item(0)));
+                final int iEventVariation = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("EventVariation").item(0)));
 
-            	eventtext = XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("EventText").item(0));
+            	String eventtext = XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("EventText").item(0));
             	eventtext = eventtext.replaceAll("&lt;", "<");
             	eventtext = eventtext.replaceAll("&gt;", ">");
             	eventtext = eventtext.replaceAll("/>", ">");
@@ -160,7 +158,7 @@ public class XMLMatchdetailsParser {
             	eventtext = eventtext.replaceAll("&amp;", "&");
 
             	// Convert the ID to type and subtype.
-            	iMatchEventID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("EventTypeID").item(0)));
+            	final int iMatchEventID = Integer.parseInt(XMLManager.getFirstChildNodeValue((Element) root.getElementsByTagName("EventTypeID").item(0)));
 
             	//get players
             	boolean subHome = true;
@@ -284,12 +282,12 @@ public class XMLMatchdetailsParser {
         var root = doc.getDocumentElement();
 
         try {
-            //Daten füllen            
+            //Daten füllen
             //MatchData
             root = (Element) root.getElementsByTagName("Match").item(0);
             root = (Element) root.getElementsByTagName("Arena").item(0);
-            
-            
+
+
             try {
             	ele = (Element) root.getElementsByTagName("ArenaID").item(0);
             	md.setArenaID(Integer.parseInt(ele.getFirstChild().getNodeValue()));
@@ -300,7 +298,7 @@ public class XMLMatchdetailsParser {
             } catch (Exception e){
             	// This fails at tournament matches - ignore
             }
-            
+
             ele = (Element) root.getElementsByTagName("WeatherID").item(0);
             if ( ele != null ) md.setWetterId(Integer.parseInt(ele.getFirstChild().getNodeValue()));
             ele = (Element) root.getElementsByTagName("SoldTotal").item(0);
@@ -378,7 +376,7 @@ public class XMLMatchdetailsParser {
         Element root;
 
         try {
-            //Daten füllen                        
+            //Daten füllen
             root = doc.getDocumentElement();
             root = (Element) root.getElementsByTagName("Match").item(0);
             root = (Element) root.getElementsByTagName("AwayTeam").item(0);
@@ -435,7 +433,7 @@ public class XMLMatchdetailsParser {
         Element root;
 
         try {
-            //Daten füllen                        
+            //Daten füllen
             root = doc.getDocumentElement();
             root = (Element) root.getElementsByTagName("Match").item(0);
             root = (Element) root.getElementsByTagName("HomeTeam").item(0);

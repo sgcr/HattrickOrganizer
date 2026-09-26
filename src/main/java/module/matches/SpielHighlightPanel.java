@@ -8,6 +8,7 @@ import core.model.TranslationFacility;
 import core.model.match.MatchEvent;
 import core.model.match.MatchKurzInfo;
 import core.model.match.Matchdetails;
+import core.util.HOLogger;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -67,8 +68,6 @@ public class SpielHighlightPanel extends LazyImagePanel {
 			int guestPenalitiesScored=0;
 
 			String scoreText;
-			boolean homeAction;
-
 
 			for (int i = 0; i < matchHighlights.size(); i++) {
 				scoreText = "";
@@ -81,7 +80,7 @@ public class SpielHighlightPanel extends LazyImagePanel {
 				// Displaying the event
 				if (bEventHighlighted) {
 
-					homeAction = (highlight.getTeamID() == info.getHomeTeamID());
+					final boolean homeAction = (highlight.getTeamID() == info.getHomeTeamID());
 					icons = highlight.getIcons();
 
 					String spielername = highlight.getPlayerName();
@@ -91,14 +90,13 @@ public class SpielHighlightPanel extends LazyImagePanel {
 					spielername += (" (" + highlight.getMinute() + "')");
 
 					if (highlight.isGoalEvent()) {
-						if (homeAction) {
-							homeScore++;
-							scoreText = "<html><b>" + homeScore + "</b> - " + guestScore + "</html>";
-						}
-						else {
-							guestScore++;
-							scoreText = "<html>" + homeScore + " - <b>" + guestScore + "</b></html>";
-						}
+                        if (homeAction || highlight.isOwnGoalEvent()) {
+                            homeScore++;
+                            scoreText = "<html><b>" + homeScore + "</b> - " + guestScore + "</html>";
+                        } else {
+                            guestScore++;
+                            scoreText = "<html>" + homeScore + " - <b>" + guestScore + "</b></html>";
+                        }
 					}
 
 					if (highlight.isPenaltyContestGoalEvent()) {

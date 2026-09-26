@@ -19,6 +19,9 @@ import static core.model.match.MatchEvent.MatchEventID.SPECTATORS_OR_VENUE_RAIN;
 
 public class MatchEvent extends AbstractTable.Storable {
 
+    private static final Set<MatchEventID> OWN_GOAL_EVENTS =
+        Set.of(MatchEventID.SE_GOAL_UNPREDICTABLE_OWN_GOAL, MatchEventID.SE_NO_GOAL_UNPREDICTABLE_OWN_GOAL_ALMOST);
+
     private String m_sEventText = "";
 
     private String m_sGehilfeName = "";
@@ -194,14 +197,20 @@ public class MatchEvent extends AbstractTable.Storable {
         }
 
         public static MatchEventID fromMatchEventID(int iMatchEventID) {
-            MatchEventID ret = lookup.get(iMatchEventID);
-            if (ret == null) {
-                ret = UNKNOWN_MATCHEVENT;
+            return findMatchEventId(iMatchEventID).orElseGet(() -> {
                 HOLogger.instance().log(MatchEventID.class, "UNKNOWN_MATCHEVENT: " + iMatchEventID);
-            }
-            return ret;
+                return UNKNOWN_MATCHEVENT;
+            });
         }
 
+        public static MatchEventID ofMatchEventId(int matchEventId) {
+            return findMatchEventId(matchEventId).orElseThrow(
+                () -> new IllegalArgumentException("No MatchEventID found for ID %d".formatted(matchEventId)));
+        }
+
+        public static Optional<MatchEventID> findMatchEventId(int matchEventId) {
+            return Optional.ofNullable(lookup.get(matchEventId));
+        }
     }
 
     public enum MatchPartId {
@@ -306,6 +315,14 @@ public class MatchEvent extends AbstractTable.Storable {
 
     public boolean isNonGoalEvent() {
         return ((this.m_iMatchEventID >= 200) && (this.m_iMatchEventID < 300));
+    }
+
+    public boolean isOwnGoalEvent() {
+        return isOwnGoalEvent(m_iMatchEventID);
+    }
+
+    public static boolean isOwnGoalEvent(int matchEventID) {
+        return OWN_GOAL_EVENTS.contains(MatchEventID.ofMatchEventId(matchEventID));
     }
 
     public boolean isNeutralEvent() {
